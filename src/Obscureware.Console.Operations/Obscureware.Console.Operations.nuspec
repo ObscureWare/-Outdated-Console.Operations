@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ObscureWare.Console.Core</id>
+    <version>$version$</version>
+    <title>ObscureWare.Console.Core</title>
+    <authors>Sebastian Gruchacz</authors>
+    <owners>ObscureWare Solutions</owners>
+    <licenseUrl>https://github.com/ObscureWare/Console.Operations/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ObscureWare/Console.Operations/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This library allows for console operations, like table / frame display. Requires Obscureware.Console.Core to support coloring and console control</description>
+    <releaseNotes>Version BETA. Will be extended with more functionality.</releaseNotes>
+    <copyright>Copyright © Sebastian Gruchacz 2016</copyright>
+    <tags>Console,operations,Management,tables,frames</tags>
+  </metadata>
+</package>
