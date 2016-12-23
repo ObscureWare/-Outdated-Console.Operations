@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>ObscureWare.Console.Core</id>
+    <id>ObscureWare.Console.Operations</id>
     <version>$version$</version>
-    <title>ObscureWare.Console.Core</title>
+    <title>ObscureWare.Console.Operations</title>
     <authors>Sebastian Gruchacz</authors>
     <owners>ObscureWare Solutions</owners>
     <licenseUrl>https://github.com/ObscureWare/Console.Operations/blob/master/LICENSE</licenseUrl>
