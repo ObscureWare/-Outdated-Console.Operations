@@ -37,8 +37,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ObscureWare.Console, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObscureWare.Console.Core.0.2.0\lib\net452\ObscureWare.Console.dll</HintPath>
+    <Reference Include="ObscureWare.Console, Version=0.2.1.1673, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObscureWare.Console.Core.0.2.1.1673\lib\net452\ObscureWare.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InternalTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,9 +64,6 @@
       <Project>{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}</Project>
       <Name>Obscureware.Console.Operations</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="License.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

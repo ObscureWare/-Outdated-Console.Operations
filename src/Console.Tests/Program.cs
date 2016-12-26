@@ -11,29 +11,20 @@
     {
         private static void Main(string[] args)
         {
-            //// each test shall be run on separate run - colors conflicts and handles conflicts
-            //var tests = new InternalTests();
-            ////tests.PrintDefaultColors();
-            //tests.PrintCustomColors();
-            //return;
-
-            
-
-
-            ConsoleManager helper = new ConsoleManager();
+            ConsoleController controller = new ConsoleController();
             
             //helper.ReplaceConsoleColor(ConsoleColor.DarkCyan, Color.Salmon);
-            helper.ReplaceConsoleColors(
+            controller.ReplaceConsoleColors(
                 new Tuple<ConsoleColor, Color>(ConsoleColor.DarkCyan, Color.Chocolate),
                 new Tuple<ConsoleColor, Color>(ConsoleColor.Blue, Color.DodgerBlue),
                 new Tuple<ConsoleColor, Color>(ConsoleColor.Yellow, Color.Gold),
                 new Tuple<ConsoleColor, Color>(ConsoleColor.DarkBlue, Color.MidnightBlue));
 
-            IConsole console = new SystemConsole(helper, isFullScreen: false);
+            IConsole console = new SystemConsole(controller, isFullScreen: false);
             ConsoleOperations ops = new ConsoleOperations(console);
 
             PrintColorsMessages(console);
-            PrintAllNamedColors(helper, console);
+            PrintAllNamedColors(controller, console);
             PrintFrames(ops, console);
             PrintTables(ops);
 
@@ -106,7 +97,7 @@
             console.Clear();
         }
 
-        private static void PrintAllNamedColors(ConsoleManager helper, IConsole console)
+        private static void PrintAllNamedColors(ConsoleController controller, IConsole console)
         {
             var props =
                 typeof(Color).GetProperties(BindingFlags.Static | BindingFlags.Public)
@@ -114,7 +105,7 @@
             foreach (var propertyInfo in props)
             {
                 Color c = (Color) propertyInfo.GetValue(null);
-                ConsoleColor cc = helper.CloseColorFinder.FindClosestColor(c);
+                ConsoleColor cc = controller.CloseColorFinder.FindClosestColor(c);
                 Console.ForegroundColor = cc;
                 Console.WriteLine("{0,-25} {1,-18} #{2,-8:X}", propertyInfo.Name, Enum.GetName(typeof(ConsoleColor), cc),
                     c.ToArgb());
