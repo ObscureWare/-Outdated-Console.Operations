@@ -5,7 +5,9 @@
     using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
+
     using ObscureWare.Console;
+
     using Tables;
 
     public class ConsoleOperations

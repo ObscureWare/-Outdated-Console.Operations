@@ -37,8 +37,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ObscureWare.Console, Version=0.2.1.1673, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObscureWare.Console.Core.0.2.1.1673\lib\net452\ObscureWare.Console.dll</HintPath>
+    <Reference Include="ObscureWare.Console, Version=0.2.3.18688, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObscureWare.Console.Core.0.2.3.18688\lib\net452\ObscureWare.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
