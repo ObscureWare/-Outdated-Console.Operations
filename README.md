@@ -37,7 +37,7 @@ ConsoleOperations ops = new ConsoleOperations(console);
         console.Clear();
     }
     ```
-    !(https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_1.png)
+    ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_1.png)
 
 2. Printing all named colors using console
     ```csharp
@@ -60,7 +60,7 @@ ConsoleOperations ops = new ConsoleOperations(console);
     }
     ```
 
-    !(https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_2.png)
+    ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_2.png)
 
 3. Printing text in frames
     ```csharp
@@ -100,7 +100,7 @@ ConsoleOperations ops = new ConsoleOperations(console);
     }
     ```
 
-    !(https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_3.png)
+    ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_3.png)
 
 4. Printing tables
     *... comming soon ...*
