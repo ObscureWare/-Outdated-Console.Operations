@@ -15,7 +15,7 @@ IConsole console = new SystemConsole(controller, isFullScreen: false);
 ConsoleOperations ops = new ConsoleOperations(console);
 ```
 
-1. Adapting text colors
+1. Adapting text colors to console capabilities
     ```csharp
     private static void PrintColorsMessages(IConsole console)
     {
@@ -39,7 +39,7 @@ ConsoleOperations ops = new ConsoleOperations(console);
     ```
     ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_1.png)
 
-2. Printing all named colors using console
+2. Printing all named colors using console colors
     ```csharp
     private static void PrintAllNamedColors(ConsoleController controller, IConsole console)
     {
@@ -62,7 +62,7 @@ ConsoleOperations ops = new ConsoleOperations(console);
 
     ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_2.png)
 
-3. Printing text in frames
+3. Printing text in frames (plain box or box with frame)
     ```csharp
     private static void PrintFrames(ConsoleOperations ops, IConsole console)
     {
