@@ -14,4 +14,7 @@
     <copyright>Copyright © Sebastian Gruchacz 2016</copyright>
     <tags>Console,operations,Management,tables,frames</tags>
   </metadata>
+  <files>
+    <file src="bin\Debug\Obscureware.Shared.dll" target="lib\net452" />
+  </files>
 </package>
