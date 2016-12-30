@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SimpleTableStyle.cs" company="Obscureware Solutions">
+// <copyright file="ISimpleTableStyle.cs" company="Obscureware Solutions">
 // MIT License
 //
 // Copyright(c) 2016 Sebastian Gruchacz
@@ -23,23 +23,20 @@
 // SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the SimpleTableStyle class.
+//   Defines the ISimpleTableStyle interface.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations.Tables
+namespace Obscureware.Console.Operations.Styles
 {
     using ObscureWare.Console;
 
-    public class SimpleTableStyle : ISimpleTableStyle
+    // TODO: maybe this interface is just overkill? Delete if indeed.
+    public interface ISimpleTableStyle
     {
-        public SimpleTableStyle(ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor)
-        {
-            this.TableHeaderColor = tableHeaderColor;
-            this.TableRowColor = tableRowColor;
-        }
+        ConsoleFontColor TableHeaderColor { get; }
 
-        public ConsoleFontColor TableHeaderColor { get; }
+        ConsoleFontColor TableRowColor { get; }
 
-        public ConsoleFontColor TableRowColor { get; }
+        TableOverflowContentBehavior OverflowBehaviour { get; }
     }
 }

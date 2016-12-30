@@ -26,7 +26,7 @@
 //   Defines the FrameStyle class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace Obscureware.Console.Operations.Styles
 {
     using ObscureWare.Console;
 

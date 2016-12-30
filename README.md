@@ -111,4 +111,120 @@ ConsoleOperations ops = new ConsoleOperations(console);
     ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/demo_3.png)
 
 4. Printing tables
-    *... comming soon ...*
+
+   Sample code for testing purposes (implementation in progress):
+
+    ```csharp
+    private static void PrintTables(IConsole console)
+    {
+        var tableFrameColor = new ConsoleFontColor(Color.Silver, Color.Black);
+        var tableHeaderColor = new ConsoleFontColor(Color.White, Color.Black);
+        var tableOddRowColor = new ConsoleFontColor(Color.DarkGoldenrod, Color.Black);
+        var tableEvenRowColor = new ConsoleFontColor(Color.DimGray, Color.Black);
+
+        TableStyle tableStyle = new TableStyle(
+            tableFrameColor,
+            tableHeaderColor,
+            tableOddRowColor,
+            tableEvenRowColor,
+            @"|-||||-||-|--", // simple, ascii table
+            ' ',
+            TableOverflowContentBehavior.Ellipsis);
+
+        var headers = new[] {"Row 1", "Longer row 2", "Third row"};
+        var values = new[]
+        {
+            new[] {"1", "2", "3"},
+            new[] {"10", "223423", "3"},
+            new[] {"1", "2", "3"},
+            new[] {"12332 ", "22332423", "3223434234"},
+            new[] {"1df ds fsd fsfs fsdf s", "2234  4234 23", "3 23423423"},
+        };
+
+        // ops.WriteTabelaricData(5, 5, 50, headers, values, tableStyle);
+
+
+        console.WriteLine(tableFrameColor, "Small tables");
+
+        DataTable<string> dt = new DataTable<string>(
+            new ColumnInfo("Column a", ColumnAlignment.Left),
+            new ColumnInfo("Column B", ColumnAlignment.Left),
+            new ColumnInfo("Column V1", ColumnAlignment.Right),
+            new ColumnInfo("Column V2", ColumnAlignment.Right));
+
+        for (int i = 0; i < 20; i++)
+        {
+            dt.AddRow(
+                i.ToString(),
+                new[]
+                    {
+                        TestTools.AlphaSentence.BuildRandomStringFrom(5, 10).Trim(), TestTools.AlphaSentence.BuildRandomStringFrom(4, 15).Trim(),
+                        TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture), TestTools.GetRandomFloat(30000).ToString("N2", CultureInfo.CurrentCulture)
+                    });
+        }
+
+        SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableEvenRowColor));
+        simpleTablePrinter.PrintTable(dt);
+        Console.WriteLine();
+
+        FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
+        framedPrinter.PrintTable(dt);
+        Console.WriteLine();
+
+        SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
+        specflowPrinter.PrintTable(dt);
+        Console.WriteLine();
+
+        Console.ReadLine();
+
+        console.WriteLine(tableFrameColor, "Positioned tables");
+        Console.WriteLine();
+
+        // TODO: PrintTableAt(dt, x, y);
+
+        Console.ReadLine();
+
+        console.WriteLine(tableFrameColor, "Large tables");
+        Console.WriteLine();
+
+        dt = new DataTable<string>(
+            new ColumnInfo("Column A1", ColumnAlignment.Left),
+            new ColumnInfo("Column B", ColumnAlignment.Left),
+            new ColumnInfo("Column C", ColumnAlignment.Left),
+            new ColumnInfo("Column V1", ColumnAlignment.Right, minLength: 9),
+            new ColumnInfo("Column V2", ColumnAlignment.Right, minLength: 9),
+            new ColumnInfo("Column VXX", ColumnAlignment.Right, minLength: 14));
+
+        for (int i = 0; i < 20; i++)
+        {
+            dt.AddRow(
+                i.ToString(),
+                new[]
+                    {
+                        TestTools.AlphaSentence.BuildRandomStringFrom(10, 15).Trim(),
+                        TestTools.AlphaSentence.BuildRandomStringFrom(8, 40).Trim(),
+                        TestTools.AlphaSentence.BuildRandomStringFrom(20, 50).Trim(),
+                        TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture),
+                        TestTools.GetRandomFloat(50000).ToString("N2", CultureInfo.CurrentCulture),
+                        TestTools.GetRandomFloat(3000000).ToString("N2", CultureInfo.CurrentCulture)
+                    });
+        }
+
+        simpleTablePrinter.PrintTable(dt);
+        Console.WriteLine();
+
+        framedPrinter.PrintTable(dt);
+        Console.WriteLine();
+
+        specflowPrinter.PrintTable(dt);
+
+        console.WriteLine(tableFrameColor, "");
+        Console.ReadLine();
+    }
+    ```
+    
+    (From version 0.1.4)
+
+    ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/small_tables_0_1_4.png)
+
+    ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/large_tables_0_1_4.png)

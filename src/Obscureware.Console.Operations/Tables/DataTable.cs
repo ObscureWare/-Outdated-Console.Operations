@@ -31,6 +31,7 @@ namespace Obscureware.Console.Operations.Tables
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Shared;
 
     /// <summary>
     /// DataTable object to store object together with its tabelaric representation
@@ -93,18 +94,18 @@ namespace Obscureware.Console.Operations.Tables
         /// <summary>
         /// Builds indexed table, that provides extra Idx column to be used with cached results
         /// </summary>
-        /// <typeparam name="T">Type of data stored in the table</typeparam>
+        /// <typeparam name="TKey">Type of data stored in the table</typeparam>
         /// <param name="header">Column headers</param>
         /// <param name="dataSource">Rows data source</param>
         /// <param name="dataGenerator">Row generating callback function</param>
         /// <returns>Artificial table object</returns>
-        public static DataTable<T> BuildIndexedTable<T>(string[] header, IEnumerable<T> dataSource, Func<T, string[]> dataGenerator)
+        public static DataTable<TKey> BuildIndexedTable<TKey>(string[] header, IEnumerable<TKey> dataSource, Func<TKey, string[]> dataGenerator)
         {
-            DataTable<T> table = new DataTable<T>(
+            DataTable<TKey> table = new DataTable<TKey>(
                 new[] { "Idx" }.Concat(header).Select(head => new ColumnInfo(head)).ToArray());
 
             uint i = 1;
-            foreach (T src in dataSource)
+            foreach (TKey src in dataSource)
             {
                 // TODO: verify expected size of the array matches header count => #InvalidOperationException
                 table.AddRow(src, new[] { i.ToAlphaEnum() + '.' }.Concat(dataGenerator.Invoke(src)).ToArray());

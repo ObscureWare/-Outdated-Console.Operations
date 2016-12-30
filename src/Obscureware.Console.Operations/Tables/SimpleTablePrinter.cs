@@ -2,7 +2,7 @@
 // <copyright file="SimpleTablePrinter.cs" company="Obscureware Solutions">
 // MIT License
 //
-// Copyright(c) 2016 Sebastian Gruchacz
+// Copyright(c) 2016-2017 Sebastian Gruchacz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ namespace Obscureware.Console.Operations.Tables
     using System.Linq;
 
     using ObscureWare.Console;
+    using Styles;
 
     public class SimpleTablePrinter : DataTablePrinter
     {
@@ -57,34 +58,43 @@ namespace Obscureware.Console.Operations.Tables
 
             //this.Console.WriteLine(this.style.TableHeaderColor, string.Format(formatter, columns.Select(col => col.Header).ToArray()));
             this.Console.WriteLine(this.style.TableHeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
-
-
-            //foreach (string[] row in rows)
-            //{
-            //    // TODO: add missing cells...
-            //    this.Console.WriteLine(this.style.TableRowColor, string.Format(formatter, row));
-            //}
             
             foreach (string[] row in rows)
             {
-                string[] result = new string[columns.Length];
-                for (int i = 0; i < columns.Length; i++)
+                switch (this.style.OverflowBehaviour)
                 {
-                    // taking care for asymmetric array, btw
-                    if (row.Length > i)
+                    case TableOverflowContentBehavior.Ellipsis:
                     {
-                        if (row[i].Length <= columns[i].CurrentLength)
+                        string[] result = new string[columns.Length];
+                        for (int i = 0; i < columns.Length; i++)
                         {
-                            result[i] = row[i];
+                            // taking care for asymmetric array, btw
+                            if (row.Length > i)
+                            {
+                                if (row[i].Length <= columns[i].CurrentLength)
+                                {
+                                    result[i] = row[i];
+                                }
+                                else
+                                {
+                                    result[i] = row[i].Substring(0, columns[i].CurrentLength);
+                                }
+                            }
                         }
-                        else
-                        {
-                            result[i] = row[i].Substring(0, columns[i].CurrentLength);
-                        }
+
+                        this.Console.WriteLine(this.style.TableRowColor, string.Format(formatter, result));
+                        break;
+                    }
+                    case TableOverflowContentBehavior.Wrap:
+                    {
+                        throw new NotImplementedException();
+                        break;
+                    }
+                    default:
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(TableOverflowContentBehavior));
                     }
                 }
-
-                this.Console.WriteLine(this.style.TableRowColor, string.Format(formatter, result));
             }
 
 

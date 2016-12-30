@@ -32,6 +32,7 @@ namespace Obscureware.Console.Operations.Tables
     using System.Collections.Generic;
 
     using ObscureWare.Console;
+    using Styles;
 
     public class FramedTablePrinter : DataTablePrinter
     {

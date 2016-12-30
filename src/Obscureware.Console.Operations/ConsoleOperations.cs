@@ -35,7 +35,8 @@ namespace Obscureware.Console.Operations
     using System.Linq;
 
     using ObscureWare.Console;
-
+    using Shared;
+    using Styles;
     using Tables;
 
     /// <summary>

@@ -2,7 +2,7 @@
 // <copyright file="SpeflowStyleTablePrinter.cs" company="Obscureware Solutions">
 // MIT License
 //
-// Copyright(c) 2016-17 Sebastian Gruchacz
+// Copyright(c) 2016-2017 Sebastian Gruchacz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,20 +30,76 @@ namespace Obscureware.Console.Operations.Tables
 {
     using System;
     using System.Collections.Generic;
-
+    using System.Linq;
     using ObscureWare.Console;
+    using Styles;
 
     public class SpeflowStyleTablePrinter : DataTablePrinter
     {
+        private readonly TableStyle _tableStyle;
+
         public SpeflowStyleTablePrinter(IConsole console, TableStyle tableStyle) : base(console)
         {
+            this._tableStyle = tableStyle;
         }
 
         protected override int ExternalFrameThickness { get; } = 2;
 
         protected override void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows)
         {
-            this.Console.WriteLine("Not implemented");
+            int index = 0;
+            string formatter = "|" + string.Join("|", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}")) + "|";
+
+            this.Console.WriteLine(this._tableStyle.HeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
+            // TODO: WriteText + this.Console.AdvanceLine();
+
+            // TODO: add different coloring to the frame
+
+            index = 0;
+            foreach (string[] row in rows)
+            {
+                switch (this._tableStyle.OverflowBehaviour)
+                {
+                    case TableOverflowContentBehavior.Ellipsis:
+                        {
+                            string[] result = new string[columns.Length];
+                            for (int i = 0; i < columns.Length; i++)
+                            {
+                                // taking care for asymmetric array, btw
+                                if (row.Length > i)
+                                {
+                                    if (row[i].Length <= columns[i].CurrentLength)
+                                    {
+                                        result[i] = row[i];
+                                    }
+                                    else
+                                    {
+                                        result[i] = row[i].Substring(0, columns[i].CurrentLength);
+                                    }
+                                }
+                            }
+
+                            this.Console.WriteLine(
+                                (index % 2 == 0 ) ? this._tableStyle.EvenRowColor : this._tableStyle.OddRowColor,
+                                string.Format(formatter, result));
+                            break;
+                        }
+                    case TableOverflowContentBehavior.Wrap:
+                        {
+                            throw new NotImplementedException();
+                            break;
+                        }
+                    default:
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(TableOverflowContentBehavior));
+                        }
+                }
+
+                index++;
+            }
+
+
+            // TODO: implement and use Console.BatchPrint()! - atomic operation
         }
     }
 }

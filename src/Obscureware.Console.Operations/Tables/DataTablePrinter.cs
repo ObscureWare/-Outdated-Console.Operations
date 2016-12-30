@@ -67,9 +67,9 @@ namespace Obscureware.Console.Operations.Tables
             this.CalculateRequiredRowSizes(columns, rows);
 
             int spacingWidth = columns.Length - 1;
-            int totalAvailableWidth = this.Console.WindowWidth - 1; // -1 for ENDL - need to not overflow, to avoid empty lines
+            int totalAvailableWidth = this.Console.WindowWidth - 1 - this.ExternalFrameThickness; // -1 for ENDL - need to not overflow, to avoid empty lines
             // TODO: replace with write, cut on the end and 
-            int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth + this.ExternalFrameThickness;
+            int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
 
             // check if table fits to the screen width
             if (maxRequiredWidth > totalAvailableWidth)

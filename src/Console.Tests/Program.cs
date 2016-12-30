@@ -36,6 +36,7 @@ namespace ConsoleTests
     using System.Xml.Schema;
 
     using Obscureware.Console.Operations;
+    using Obscureware.Console.Operations.Styles;
     using Obscureware.Console.Operations.Tables;
 
     using ObscureWare.Console;
@@ -68,7 +69,7 @@ namespace ConsoleTests
         {
             var tableFrameColor = new ConsoleFontColor(Color.Silver, Color.Black);
             var tableHeaderColor = new ConsoleFontColor(Color.White, Color.Black);
-            var tableOddRowColor = new ConsoleFontColor(Color.Silver, Color.Black);
+            var tableOddRowColor = new ConsoleFontColor(Color.DarkGoldenrod, Color.Black);
             var tableEvenRowColor = new ConsoleFontColor(Color.DimGray, Color.Black);
 
             TableStyle tableStyle = new TableStyle(
@@ -78,7 +79,7 @@ namespace ConsoleTests
                 tableEvenRowColor,
                 @"|-||||-||-|--", // simple, ascii table
                 ' ',
-                TableLargeRowContentBehavior.Ellipsis);
+                TableOverflowContentBehavior.Ellipsis);
 
             var headers = new[] {"Row 1", "Longer row 2", "Third row"};
             var values = new[]
@@ -93,7 +94,7 @@ namespace ConsoleTests
             // ops.WriteTabelaricData(5, 5, 50, headers, values, tableStyle);
 
 
-            Console.WriteLine("Small tables");
+            console.WriteLine(tableFrameColor, "Small tables");
 
             DataTable<string> dt = new DataTable<string>(
                 new ColumnInfo("Column a", ColumnAlignment.Left),
@@ -112,29 +113,28 @@ namespace ConsoleTests
                         });
             }
 
-            SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableOddRowColor));
+            SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableEvenRowColor));
             simpleTablePrinter.PrintTable(dt);
-
             Console.WriteLine();
 
             FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
             framedPrinter.PrintTable(dt);
-
             Console.WriteLine();
 
             SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
             specflowPrinter.PrintTable(dt);
+            Console.WriteLine();
 
             Console.ReadLine();
 
-            Console.WriteLine("Positioned tables");
+            console.WriteLine(tableFrameColor, "Positioned tables");
             Console.WriteLine();
 
             // TODO: PrintTableAt(dt, x, y);
 
             Console.ReadLine();
 
-            Console.WriteLine("Large tables");
+            console.WriteLine(tableFrameColor, "Large tables");
             Console.WriteLine();
 
             dt = new DataTable<string>(
@@ -161,16 +161,14 @@ namespace ConsoleTests
             }
 
             simpleTablePrinter.PrintTable(dt);
-
             Console.WriteLine();
 
             framedPrinter.PrintTable(dt);
-
             Console.WriteLine();
 
             specflowPrinter.PrintTable(dt);
 
-
+            console.WriteLine(tableFrameColor, "");
             Console.ReadLine();
         }
 

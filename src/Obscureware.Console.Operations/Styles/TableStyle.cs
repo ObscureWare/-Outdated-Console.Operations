@@ -26,7 +26,7 @@
 //   Defines the TableStyle class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace Obscureware.Console.Operations.Styles
 {
     using ObscureWare.Console;
 
@@ -52,14 +52,14 @@ namespace Obscureware.Console.Operations
         private readonly char[] _frameChars;
 
         public TableStyle(ConsoleFontColor frameColor, ConsoleFontColor headerColor, ConsoleFontColor oddRowColor, ConsoleFontColor evenRowColor,
-            string frameChars, char backgroundFiller, TableLargeRowContentBehavior behaviour)
+            string frameChars, char backgroundFiller, TableOverflowContentBehavior overflowBehaviour)
         {
             this.FrameColor = frameColor;
             this.HeaderColor = headerColor;
             this.OddRowColor = oddRowColor;
             this.EvenRowColor = evenRowColor;
             this.BackgroundFiller = backgroundFiller;
-            this.Behaviour = behaviour;
+            this.OverflowBehaviour = overflowBehaviour;
             this._frameChars = frameChars.ToCharArray();
         }
 
@@ -69,7 +69,8 @@ namespace Obscureware.Console.Operations
         public ConsoleFontColor EvenRowColor { get; private set; }
 
         public char BackgroundFiller { get; private set; }
-        public TableLargeRowContentBehavior Behaviour { get; private set; }
+
+        public TableOverflowContentBehavior OverflowBehaviour { get; private set; }
 
         public char TopLeft => this._frameChars[(byte)TablePiece.TopLeft];
 
@@ -96,21 +97,5 @@ namespace Obscureware.Console.Operations
         public char TopConnector => this._frameChars[(byte)TablePiece.TopConnector];
 
         public char BottomConnector => this._frameChars[(byte)TablePiece.BottomConnector];
-    }
-
-    /// <summary>
-    /// Specifies how large content of table rows will be treated
-    /// </summary>
-    public enum TableLargeRowContentBehavior
-    {
-        /// <summary>
-        /// Cut to fit with ellipsis
-        /// </summary>
-        Ellipsis,
-
-        /// <summary>
-        /// Multi-lined
-        /// </summary>
-        Wrap // TODO:
     }
 }
