@@ -35,7 +35,7 @@ namespace Obscureware.Console.Operations.Tables
     /// </summary>
     public class ColumnInfo
     {
-        public ColumnInfo(string header, ColumnAlignment alignment = ColumnAlignment.Left)
+        public ColumnInfo(string header, ColumnAlignment alignment = ColumnAlignment.Left, int minLength = 0)
         {
             if (string.IsNullOrWhiteSpace(header))
             {
@@ -45,6 +45,7 @@ namespace Obscureware.Console.Operations.Tables
             this.Header = header;
             this.Alignment = alignment;
             this.CurrentLength = header.Length;
+            this.MinLength = minLength;
         }
 
         public string Header { get; private set; }

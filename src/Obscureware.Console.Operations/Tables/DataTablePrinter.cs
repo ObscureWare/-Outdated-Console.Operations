@@ -37,13 +37,24 @@ namespace Obscureware.Console.Operations.Tables
     /// <summary>
     /// Base class for printing content of the <see cref="DataTable{T}"/>. Contains base routines for measurement.
     /// </summary>
-    public  class DataTablePrinter // TODO: abstract and then simple table printer
+    public abstract class DataTablePrinter
     {
         private readonly IConsole _console;
 
-        public DataTablePrinter(IConsole console)
+        protected DataTablePrinter(IConsole console)
         {
             this._console = console;
+        }
+
+        /// <summary>
+        /// Target, rendering console
+        /// </summary>
+        protected IConsole Console
+        {
+            get
+            {
+                return this._console;
+            }
         }
 
         /// <summary>
@@ -51,34 +62,25 @@ namespace Obscureware.Console.Operations.Tables
         /// </summary>
         /// <param name="columns"></param>
         /// <param name="rows"></param>
-        /// <param name="tableHeaderColor"></param>
-        /// <param name="tableRowColor"></param>
-        public void PrintAsSimpleTable(ColumnInfo[] columns, string[][] rows, ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor)
+        public void PrintTable(ColumnInfo[] columns, string[][] rows)
         {
             this.CalculateRequiredRowSizes(columns, rows);
 
             int spacingWidth = columns.Length - 1;
-            int totalAvailableWidth = this._console.WindowWidth - 1; // -1 for ENDL - need to not overflow, to avoid empty lines
-            int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
-            if (maxRequiredWidth < totalAvailableWidth)
-            {
-                // cool, table fits to the screen
-                int index = 0;
-                string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}"));
-                this._console.WriteLine(tableHeaderColor, string.Format(formatter, columns.Select(col => col.Header).ToArray()));
-                foreach (string[] row in rows)
-                {
-                    // TODO: add missing cells...
-                    this._console.WriteLine(tableRowColor, string.Format(formatter, row));
-                }
-            }
-            else
+            int totalAvailableWidth = this.Console.WindowWidth - 1; // -1 for ENDL - need to not overflow, to avoid empty lines
+            // TODO: replace with write, cut on the end and 
+            int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth + this.ExternalFrameThickness;
+
+            // check if table fits to the screen width
+            if (maxRequiredWidth > totalAvailableWidth)
             {
                 int availableWidth = totalAvailableWidth - spacingWidth;
-                float scale = (float) this._console.WindowWidth / (float)maxRequiredWidth;
+                float scale = (float)this.Console.WindowWidth / (float)maxRequiredWidth;
+
                 for (int i = 0; i < columns.Length; i++)
                 {
                     // TODO:probably round would be as good... gonna check
+                    // TODO: OK, this works bad if the last column has min length - have to deduct all fixed columns from total and then divide content to the others...
                     int newLength = (int)Math.Floor(columns[i].CurrentLength * scale);
                     if (newLength < columns[i].MinLength)
                     {
@@ -89,36 +91,16 @@ namespace Obscureware.Console.Operations.Tables
                     availableWidth -= newLength;
                     if (availableWidth < 0)
                     {
-                        newLength = newLength - (Math.Abs(availableWidth));
+                        newLength = newLength - Math.Abs(availableWidth);
                         availableWidth = 0;
                     }
+
                     columns[i].CurrentLength = Math.Max(0, newLength);
                 }
-
-                int index = 0;
-                string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{(col.CurrentLength) * (int)col.Alignment}}}"));
-                this._console.WriteLine(tableHeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
-                foreach (string[] row in rows)
-                {
-                    string[] result = new string[columns.Length];
-                    for (int i = 0; i < columns.Length; i++)
-                    {
-                        if (row.Length > i) // taking care for assymetric array, btw
-                        {
-                            if (row[i].Length <= columns[i].CurrentLength)
-                            {
-                                result[i] = row[i];
-                            }
-                            else
-                            {
-                                result[i] = row[i].Substring(0, columns[i].CurrentLength);
-                            }
-                        }
-                    }
-
-                    this._console.WriteLine(tableRowColor, string.Format(formatter, result));
-                }
             }
+
+            // Now can render table
+            this.RenderTable(columns, rows);
         }
 
         private void CalculateRequiredRowSizes(ColumnInfo[] columns, string[][] rows)
@@ -159,24 +141,21 @@ namespace Obscureware.Console.Operations.Tables
             return result;
         }
 
-        public void PrintAsSimpleTable<T>(DataTable<T> table, ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor)
+        public void PrintTable<T>(DataTable<T> table)
         {
-            this.PrintAsSimpleTable(table.Columns.Values.ToArray(), table.GetRows().ToArray(), tableHeaderColor, tableRowColor);
+            this.PrintTable(table.Columns.Values.ToArray(), table.GetRows().ToArray());
         }
 
-        public DataTable<T> BuildTable<T>(string[] header, IEnumerable<T> dataSource, Func<T, string[]> dataGenerator)
-        {
-            DataTable<T> table = new DataTable<T>(
-                new[] { "A.Id" }.Concat(header).Select(head => new ColumnInfo(head)).ToArray());
+        /// <summary>
+        /// Specifies extra external frames total thickness
+        /// </summary>
+        protected abstract int ExternalFrameThickness { get; }
 
-            uint i = 1;
-            foreach (T src in dataSource)
-            {
-                table.AddRow(src, new[] { i.ToAlphaEnum() + '.' }.Concat(dataGenerator.Invoke(src)).ToArray());
-                i++;
-            }
-
-            return table;
-        }
+        /// <summary>
+        /// Actual rendering function
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="rows"></param>
+        protected abstract void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows);
     }
 }

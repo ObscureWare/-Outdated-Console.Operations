@@ -38,11 +38,21 @@ namespace Obscureware.Console.Operations
     public static class Extensions
     {
         /// <summary>
+        /// The minimum fitting area for string splitting.
+        /// </summary>
+        private const uint MIN_FIT_AREA = 3;
+
+        /// <summary>
+        /// Info-units suffixes
+        /// </summary>
+        private static readonly string[] Sufixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        
+        /// <summary>
         /// Converts natural number (indexing, staring from 1) into Excel-like column numbering format (i.e. A, B, ... Z, AB, AC, ... ZY, ZZ)
         /// </summary>
         /// <param name="value">Number to be converted.</param>
-        /// <returns></returns>
-        /// <remarks>http://stackoverflow.com/questions/837155/fastest-function-to-generate-excel-column-letters-in-c-sharp</remarks>
+        /// <returns>Excel-like column number</returns>
+        /// <remarks>Taken from http://stackoverflow.com/questions/837155/fastest-function-to-generate-excel-column-letters-in-c-sharp </remarks>
         public static string ToAlphaEnum(this uint @value)
         {
             string columnString = string.Empty;
@@ -59,26 +69,23 @@ namespace Obscureware.Console.Operations
         }
 
         /// <summary>
-        /// Converts Excel-like column numbering format into coresponding natural integer
+        /// Converts Excel-like column numbering format into corresponding natural integer
         /// </summary>
         /// <param name="value">String to be "parsed" (converted)</param>
         /// <returns></returns>
+        /// <remarks>Taken from http://stackoverflow.com/questions/837155/fastest-function-to-generate-excel-column-letters-in-c-sharp </remarks>
         public static int FromAlphaEnum(this string @value)
         {
             int retVal = 0;
             string col = @value.ToUpper();
-            for (int iChar = col.Length - 1; iChar >= 0; iChar--)
+            for (int charIndex = col.Length - 1; charIndex >= 0; charIndex--)
             {
-                char colPiece = col[iChar];
+                char colPiece = col[charIndex];
                 int colNum = colPiece - 64;
-                retVal = retVal + colNum * (int)Math.Pow(26, col.Length - (iChar + 1));
+                retVal = retVal + (colNum * (int)Math.Pow(26, col.Length - (charIndex + 1)));
             }
             return retVal;
         }
-
-        private static readonly string[] Sufixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-
-        private const uint MIN_FIT_AREA = 3;
 
         /// <summary>
         /// Converts number of bytes into user friendly format of KB, MB, GB etc.
@@ -86,10 +93,9 @@ namespace Obscureware.Console.Operations
         /// <param name="byteCount">Count of bytes</param>
         /// <param name="culture">Optional culture for number formatting</param>
         /// <returns></returns>
+        /// <remarks>Based on http://stackoverflow.com/questions/281640/how-do-i-get-a-human-readable-file-size-in-bytes-abbreviation-using-net </remarks>
         public static string ToFriendlyXBytesText(this long byteCount, CultureInfo culture = null)
         {
-            // http://stackoverflow.com/questions/281640/how-do-i-get-a-human-readable-file-size-in-bytes-abbreviation-using-net
-
             if (byteCount == 0)
             {
                 return $"{0} {Sufixes[0]}";
@@ -100,7 +106,8 @@ namespace Obscureware.Console.Operations
 
             if (place >= Sufixes.Length)
             {
-                throw new ArgumentException($"Unexpectedly large number, objects larger than 1023{Sufixes[Sufixes.Length - 1]} are not expected to exists in the entire universe!",
+                throw new ArgumentException(
+                    $"Unexpectedly large number, objects larger than 1023{Sufixes[Sufixes.Length - 1]} are not expected to exists in the entire universe!",
                     nameof(byteCount));
             }
             double num = Math.Round(bytes / Math.Pow(1024, place), 1);
@@ -111,16 +118,20 @@ namespace Obscureware.Console.Operations
         /// <summary>
         /// Splits text into lines that fit into designated column width
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="columnWidth"></param>
-        /// <returns></returns>
-        /// <remarks>Used this imperfect solution for now: http://stackoverflow.com/a/1678162.
+        /// <param name="text">Text to split</param>
+        /// <param name="columnWidth">Area width to fit the string</param>
+        /// <returns>Text splinted into matching pieces.</returns>
+        /// <remarks>Used this imperfect solution for now: http://stackoverflow.com/a/1678162
         /// This will not work properly for long words.
         /// This is not able to properly break the words in the middle to optimize space...
-        /// // TODO: use Humanizer library perhaps?
+        /// TODO: use Humanizer library perhaps?
         /// </remarks>
         public static IEnumerable<string> SplitTextToFit(this string text, uint columnWidth)
         {
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
             if (columnWidth < MIN_FIT_AREA)
             {
                 throw new ArgumentException($"This is just nonsense - area to fit text into must be at least {MIN_FIT_AREA} characters wide.", nameof(columnWidth));

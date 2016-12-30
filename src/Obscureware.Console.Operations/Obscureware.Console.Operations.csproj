@@ -60,6 +60,11 @@
     <Compile Include="Tables\ColumnInfo.cs" />
     <Compile Include="Tables\DataTable.cs" />
     <Compile Include="Tables\DataTablePrinter.cs" />
+    <Compile Include="Tables\FramedTablePrinter.cs" />
+    <Compile Include="Tables\ISimpleTableStyle.cs" />
+    <Compile Include="Tables\SimpleTablePrinter.cs" />
+    <Compile Include="Tables\SimpleTableStyle.cs" />
+    <Compile Include="Tables\SpeflowStyleTablePrinter.cs" />
     <Compile Include="TextColumnInfo.cs" />
   </ItemGroup>
   <ItemGroup>

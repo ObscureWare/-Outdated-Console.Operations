@@ -30,9 +30,14 @@ namespace ConsoleTests
 {
     using System;
     using System.Drawing;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using System.Xml.Schema;
+
     using Obscureware.Console.Operations;
+    using Obscureware.Console.Operations.Tables;
+
     using ObscureWare.Console;
 
     internal static class Program
@@ -51,20 +56,20 @@ namespace ConsoleTests
             IConsole console = new SystemConsole(controller, isFullScreen: false);
             ConsoleOperations ops = new ConsoleOperations(console);
 
-            PrintColorsMessages(console);
-            PrintAllNamedColors(controller, console);
-            PrintFrames(ops, console);
-            PrintTables(ops);
+            //PrintColorsMessages(console);
+            //PrintAllNamedColors(controller, console);
+            //PrintFrames(ops, console);
+            PrintTables(console);
 
             console.ReadLine();
         }
 
-        private static void PrintTables(ConsoleOperations ops)
+        private static void PrintTables(IConsole console)
         {
             var tableFrameColor = new ConsoleFontColor(Color.Silver, Color.Black);
             var tableHeaderColor = new ConsoleFontColor(Color.White, Color.Black);
-            var tableOddRowColor = new ConsoleFontColor(Color.Black, Color.Silver);
-            var tableEvenRowColor = new ConsoleFontColor(Color.Black, Color.DimGray);
+            var tableOddRowColor = new ConsoleFontColor(Color.Silver, Color.Black);
+            var tableEvenRowColor = new ConsoleFontColor(Color.DimGray, Color.Black);
 
             TableStyle tableStyle = new TableStyle(
                 tableFrameColor,
@@ -85,7 +90,86 @@ namespace ConsoleTests
                 new[] {"1df ds fsd fsfs fsdf s", "2234  4234 23", "3 23423423"},
             };
 
-            ops.WriteTabelaricData(5, 5, 50, headers, values, tableStyle);
+            // ops.WriteTabelaricData(5, 5, 50, headers, values, tableStyle);
+
+
+            Console.WriteLine("Small tables");
+
+            DataTable<string> dt = new DataTable<string>(
+                new ColumnInfo("Column a", ColumnAlignment.Left),
+                new ColumnInfo("Column B", ColumnAlignment.Left),
+                new ColumnInfo("Column V1", ColumnAlignment.Right),
+                new ColumnInfo("Column V2", ColumnAlignment.Right));
+
+            for (int i = 0; i < 20; i++)
+            {
+                dt.AddRow(
+                    i.ToString(),
+                    new[]
+                        {
+                            TestTools.AlphaSentence.BuildRandomStringFrom(5, 10).Trim(), TestTools.AlphaSentence.BuildRandomStringFrom(4, 15).Trim(),
+                            TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture), TestTools.GetRandomFloat(30000).ToString("N2", CultureInfo.CurrentCulture)
+                        });
+            }
+
+            SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableOddRowColor));
+            simpleTablePrinter.PrintTable(dt);
+
+            Console.WriteLine();
+
+            FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
+            framedPrinter.PrintTable(dt);
+
+            Console.WriteLine();
+
+            SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
+            specflowPrinter.PrintTable(dt);
+
+            Console.ReadLine();
+
+            Console.WriteLine("Positioned tables");
+            Console.WriteLine();
+
+            // TODO: PrintTableAt(dt, x, y);
+
+            Console.ReadLine();
+
+            Console.WriteLine("Large tables");
+            Console.WriteLine();
+
+            dt = new DataTable<string>(
+                new ColumnInfo("Column A1", ColumnAlignment.Left),
+                new ColumnInfo("Column B", ColumnAlignment.Left),
+                new ColumnInfo("Column C", ColumnAlignment.Left),
+                new ColumnInfo("Column V1", ColumnAlignment.Right, minLength: 9),
+                new ColumnInfo("Column V2", ColumnAlignment.Right, minLength: 9),
+                new ColumnInfo("Column VXX", ColumnAlignment.Right, minLength: 14));
+
+            for (int i = 0; i < 20; i++)
+            {
+                dt.AddRow(
+                    i.ToString(),
+                    new[]
+                        {
+                            TestTools.AlphaSentence.BuildRandomStringFrom(10, 15).Trim(),
+                            TestTools.AlphaSentence.BuildRandomStringFrom(8, 40).Trim(),
+                            TestTools.AlphaSentence.BuildRandomStringFrom(20, 50).Trim(),
+                            TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture),
+                            TestTools.GetRandomFloat(50000).ToString("N2", CultureInfo.CurrentCulture),
+                            TestTools.GetRandomFloat(3000000).ToString("N2", CultureInfo.CurrentCulture)
+                        });
+            }
+
+            simpleTablePrinter.PrintTable(dt);
+
+            Console.WriteLine();
+
+            framedPrinter.PrintTable(dt);
+
+            Console.WriteLine();
+
+            specflowPrinter.PrintTable(dt);
+
 
             Console.ReadLine();
         }
@@ -164,5 +248,65 @@ namespace ConsoleTests
         }
     }
 
+    // TODO: move to separate library of testing tools... tomorrow ;-)
+    internal static class TestTools
+    {
+        private static readonly Random rnd = new Random();
 
+        public static float GetRandomFloat()
+        {
+            return (float)rnd.NextDouble(); // TODO: add float type (Real, NegativeReal, PositiveReal) and range selection
+        }
+
+        public static float GetRandomFloat(int multiplier)
+        {
+            return GetRandomFloat() * multiplier;
+        }
+
+        /// <summary>
+        /// Builds string of required length concatenating random characters from given string.
+        /// </summary>
+        /// <param name="sourceString"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string BuildRandomStringFrom(this string sourceString, uint length)
+        {
+            char[] array = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                array[i] = sourceString[rnd.Next(0, sourceString.Length)];
+            }
+
+            return new string(array);
+        }
+
+        public static string BuildRandomStringFrom(this string sourceString, int minLength, int maxLength)
+        {
+            int length = rnd.Next(minLength, maxLength + 1);
+
+            char[] array = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                array[i] = sourceString[rnd.Next(0, sourceString.Length)];
+            }
+
+            return new string(array);
+        }
+
+        public static string Numeric => @"0123456789";
+
+        public static string UpperAlpha => @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        public static string LowerAlpha => @"abcdefghijklmnopqrstuvwxyz";
+
+        public static string UpperAlphanumeric => UpperAlpha + Numeric;
+
+        public static string LowerAlphanumeric => LowerAlpha + Numeric;
+
+        public static string MixedAlphanumeric => UpperAlphanumeric + LowerAlphanumeric;
+
+        public static string AlphanumericIdentifier => UpperAlphanumeric + LowerAlphanumeric + @"______"; // increased probability ;-)
+
+        public static string AlphaSentence => LowerAlpha + @"      "; // increased probability ;-)
+    }
 }

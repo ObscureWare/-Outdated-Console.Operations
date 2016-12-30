@@ -57,12 +57,12 @@ namespace Obscureware.Console.Operations
                 throw new ArgumentException("Rectangle must have reasonable ( >0 ) dimensions.", nameof(textArea));
             }
 
-            uint boxWidth = (uint) textArea.Width;
-            uint boxHeight = (uint) textArea.Height;
+            uint boxWidth = (uint)textArea.Width;
+            uint boxHeight = (uint)textArea.Height;
             this.LimitBoxDimensions(textArea.X, textArea.Y, ref boxWidth, ref boxHeight);
-            Debug.Assert(boxWidth >= 3);
-            Debug.Assert(boxHeight >= 3);
-            this.WriteTextBoxFrame(textArea.X, textArea.Y, (int) boxWidth, (int) boxHeight, frameDef);
+            Debug.Assert(boxWidth >= 3, "boxWidth >= 3");
+            Debug.Assert(boxHeight >= 3, "boxHeight >= 3");
+            this.WriteTextBoxFrame(textArea.X, textArea.Y, (int)boxWidth, (int)boxHeight, frameDef);
             return this.WriteTextBox(textArea.X + 1, textArea.Y + 1, boxWidth - 2, boxHeight - 2, text, frameDef.TextColor);
         }
 
@@ -107,7 +107,7 @@ namespace Obscureware.Console.Operations
             for (i = 0; i < lines.Length && i < boxHeight; ++i)
             {
                 this._console.SetCursorPosition(x, y + i);
-                this.WriteJustified(lines[i], boxWidth);
+                this.WriteTextJustified(lines[i], boxWidth);
             }
 
             return i == lines.Length;
@@ -139,13 +139,16 @@ namespace Obscureware.Console.Operations
             //throw new NotImplementedException("later...");
         }
 
-
-
-        private void WriteJustified(string text, uint boxWidth)
+        /// <summary>
+        /// Write text justified.
+        /// </summary>
+        /// <param name="text">The to be written.</param>
+        /// <param name="boxWidth">Available area.</param>
+        private void WriteTextJustified(string text, uint boxWidth)
         {
             if (text.Length == boxWidth)
             {
-                Console.Write(text);
+                Console.Write(text); // text that already spans whole box does not need justification
             }
             else
             {
@@ -156,11 +159,11 @@ namespace Obscureware.Console.Operations
                 }
                 else
                 {
-                    uint cleanedLength = (uint) (parts.Select(s => s.Length).Sum() + parts.Length - 1);
+                    uint cleanedLength = (uint)(parts.Select(s => s.Length).Sum() + parts.Length - 1);
                     uint remainingBlanks = boxWidth - cleanedLength;
                     if (remainingBlanks > cleanedLength / 2)
                     {
-                        Console.Write(text); // text is way too short to expand it, keep to the left
+                        Console.Write(text); // text is way too short to expand it, keep it to the left
                     }
                     else
                     {
@@ -203,11 +206,12 @@ namespace Obscureware.Console.Operations
         {
             if (x + width > this._console.WindowWidth)
             {
-                width = (uint) (this._console.WindowWidth - x);
+                width = (uint)Math.Max(0, this._console.WindowWidth - x);
             }
+
             if (y + height > this._console.WindowHeight)
             {
-                height = (uint) (this._console.WindowHeight - y);
+                height = (uint)Math.Max(0, this._console.WindowHeight - y);
             }
         }
 
