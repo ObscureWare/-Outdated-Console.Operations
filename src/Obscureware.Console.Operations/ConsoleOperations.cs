@@ -1,4 +1,32 @@
-﻿namespace Obscureware.Console.Operations
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConsoleOperations.cs" company="Obscureware Solutions">
+// MIT License
+//
+// Copyright(c) 2016 Sebastian Gruchacz
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// </copyright>
+// <summary>
+//   Defines the ConsoleOperations class.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace Obscureware.Console.Operations
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +38,9 @@
 
     using Tables;
 
+    /// <summary>
+    /// TODO: totally refactor this into pieces...
+    /// </summary>
     public class ConsoleOperations
     {
         private readonly IConsole _console;
@@ -21,12 +52,17 @@
 
         public bool WriteTextBox(Rectangle textArea, string text, FrameStyle frameDef)
         {
-            int boxWidth = textArea.Width;
-            int boxHeight = textArea.Height;
+            if (textArea.Width <= 0 || textArea.Height <= 0)
+            {
+                throw new ArgumentException("Rectangle must have reasonable ( >0 ) dimensions.", nameof(textArea));
+            }
+
+            uint boxWidth = (uint) textArea.Width;
+            uint boxHeight = (uint) textArea.Height;
             this.LimitBoxDimensions(textArea.X, textArea.Y, ref boxWidth, ref boxHeight);
             Debug.Assert(boxWidth >= 3);
             Debug.Assert(boxHeight >= 3);
-            this.WriteTextBoxFrame(textArea.X, textArea.Y, boxWidth, boxHeight, frameDef);
+            this.WriteTextBoxFrame(textArea.X, textArea.Y, (int) boxWidth, (int) boxHeight, frameDef);
             return this.WriteTextBox(textArea.X + 1, textArea.Y + 1, boxWidth - 2, boxHeight - 2, text, frameDef.TextColor);
         }
 
@@ -57,16 +93,16 @@
 
         public bool WriteTextBox(Rectangle textArea, string text, ConsoleFontColor colorDef)
         {
-            return this.WriteTextBox(textArea.X, textArea.Y, textArea.Width, textArea.Height, text, colorDef);
+            return this.WriteTextBox(textArea.X, textArea.Y, (uint) textArea.Width, (uint) textArea.Height, text, colorDef);
         }
 
-        public bool WriteTextBox(int x, int y, int boxWidth, int boxHeight, string text, ConsoleFontColor colorDef)
+        public bool WriteTextBox(int x, int y, uint boxWidth, uint boxHeight, string text, ConsoleFontColor colorDef)
         {
             this.LimitBoxDimensions(x, y, ref boxWidth, ref boxHeight); // so do not have to check for this every line is drawn...
             this._console.SetCursorPosition(x, y);
             this._console.SetColors(colorDef.ForeColor, colorDef.BgColor);
 
-            string[] lines = this.SplitText(text, boxWidth);
+            string[] lines = text.SplitTextToFit(boxWidth).ToArray();
             int i;
             for (i = 0; i < lines.Length && i < boxHeight; ++i)
             {
@@ -105,7 +141,7 @@
 
 
 
-        private void WriteJustified(string text, int boxWidth)
+        private void WriteJustified(string text, uint boxWidth)
         {
             if (text.Length == boxWidth)
             {
@@ -120,8 +156,8 @@
                 }
                 else
                 {
-                    int cleanedLength = parts.Select(s => s.Length).Sum() + parts.Length - 1;
-                    int remainingBlanks = boxWidth - cleanedLength;
+                    uint cleanedLength = (uint) (parts.Select(s => s.Length).Sum() + parts.Length - 1);
+                    uint remainingBlanks = boxWidth - cleanedLength;
                     if (remainingBlanks > cleanedLength / 2)
                     {
                         Console.Write(text); // text is way too short to expand it, keep to the left
@@ -148,32 +184,12 @@
                         else
                         {
                             Console.Write(
-                                string.Join(new string(' ', 2), parts.Take(remainingBlanks + 1)) +
-                                string.Join(new string(' ', 1), parts.Skip(remainingBlanks + 1)));
+                                string.Join(new string(' ', 2), parts.Take((int) (remainingBlanks + 1))) +
+                                string.Join(new string(' ', 1), parts.Skip((int) (remainingBlanks + 1))));
                         }
                     }
                 }
             }
-        }
-
-        private string[] SplitText(string text, int boxWidth)
-        {
-            // TODO: move it to some external toolset?
-            // used this imperfect solution for now: http://stackoverflow.com/a/1678162
-            // this will not work properly for long words
-            // this is not able to properly break the words in the middle to optimize space...
-
-            int offset = 0;
-            var lines = new List<string>();
-            while (offset < text.Length)
-            {
-                int index = text.LastIndexOf(" ", Math.Min(text.Length, offset + boxWidth)); // TODO: use CultureInfo!
-                string line = text.Substring(offset, (index - offset <= 0 ? text.Length : index) - offset);
-                offset += line.Length + 1;
-                lines.Add(line);
-            }
-
-            return lines.ToArray();
         }
 
         /// <summary>
@@ -183,15 +199,15 @@
         /// <param name="y"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        private void LimitBoxDimensions(int x, int y, ref int width, ref int height)
+        private void LimitBoxDimensions(int x, int y, ref uint width, ref uint height)
         {
             if (x + width > this._console.WindowWidth)
             {
-                width = this._console.WindowWidth - x;
+                width = (uint) (this._console.WindowWidth - x);
             }
             if (y + height > this._console.WindowHeight)
             {
-                height = this._console.WindowHeight - y;
+                height = (uint) (this._console.WindowHeight - y);
             }
         }
 
