@@ -37,9 +37,9 @@ namespace Obscureware.Console.Operations.Tables
 
     public class SimpleTablePrinter : DataTablePrinter
     {
-        private readonly ISimpleTableStyle style;
+        private readonly ICoreTableStyle style;
 
-        public SimpleTablePrinter(IConsole console, ISimpleTableStyle style): base(console)
+        public SimpleTablePrinter(IConsole console, ICoreTableStyle style): base(console, style)
         {
             if (style == null)
             {
@@ -56,8 +56,8 @@ namespace Obscureware.Console.Operations.Tables
             int index = 0;
             string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}"));
 
-            //this.Console.WriteLine(this.style.TableHeaderColor, string.Format(formatter, columns.Select(col => col.Header).ToArray()));
-            this.Console.WriteLine(this.style.TableHeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
+            //this.Console.WriteLine(this.style.HeaderColor, string.Format(formatter, columns.Select(col => col.Header).ToArray()));
+            this.Console.WriteLine(this.style.HeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
             
             foreach (string[] row in rows)
             {
@@ -82,7 +82,7 @@ namespace Obscureware.Console.Operations.Tables
                             }
                         }
 
-                        this.Console.WriteLine(this.style.TableRowColor, string.Format(formatter, result));
+                        this.Console.WriteLine(this.style.RowColor, string.Format(formatter, result));
                         break;
                     }
                     case TableOverflowContentBehavior.Wrap:

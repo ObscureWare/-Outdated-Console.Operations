@@ -61,7 +61,7 @@
     <Compile Include="Tables\DataTable.cs" />
     <Compile Include="Tables\DataTablePrinter.cs" />
     <Compile Include="Tables\FramedTablePrinter.cs" />
-    <Compile Include="Styles\ISimpleTableStyle.cs" />
+    <Compile Include="Styles\ICoreTableStyle.cs" />
     <Compile Include="Tables\SimpleTablePrinter.cs" />
     <Compile Include="Styles\SimpleTableStyle.cs" />
     <Compile Include="Tables\SpeflowStyleTablePrinter.cs" />

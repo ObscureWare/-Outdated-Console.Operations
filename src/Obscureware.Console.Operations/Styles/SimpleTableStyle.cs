@@ -30,18 +30,18 @@ namespace Obscureware.Console.Operations.Styles
 {
     using ObscureWare.Console;
 
-    public class SimpleTableStyle : ISimpleTableStyle
+    public class SimpleTableStyle : ICoreTableStyle
     {
         public SimpleTableStyle(ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor, TableOverflowContentBehavior overflowBehavior = TableOverflowContentBehavior.Ellipsis)
         {
-            this.TableHeaderColor = tableHeaderColor;
-            this.TableRowColor = tableRowColor;
+            this.HeaderColor = tableHeaderColor;
+            this.RowColor = tableRowColor;
             this.OverflowBehaviour = overflowBehavior;
         }
 
-        public ConsoleFontColor TableHeaderColor { get; }
+        public ConsoleFontColor HeaderColor { get; }
 
-        public ConsoleFontColor TableRowColor { get; }
+        public ConsoleFontColor RowColor { get; }
 
         /// <inheritdoc />
         public TableOverflowContentBehavior OverflowBehaviour { get; set; }

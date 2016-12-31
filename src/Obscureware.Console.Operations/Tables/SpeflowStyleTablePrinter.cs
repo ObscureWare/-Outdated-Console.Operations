@@ -38,7 +38,7 @@ namespace Obscureware.Console.Operations.Tables
     {
         private readonly TableStyle _tableStyle;
 
-        public SpeflowStyleTablePrinter(IConsole console, TableStyle tableStyle) : base(console)
+        public SpeflowStyleTablePrinter(IConsole console, TableStyle tableStyle) : base(console, tableStyle)
         {
             this._tableStyle = tableStyle;
         }
@@ -80,7 +80,7 @@ namespace Obscureware.Console.Operations.Tables
                             }
 
                             this.Console.WriteLine(
-                                (index % 2 == 0 ) ? this._tableStyle.EvenRowColor : this._tableStyle.OddRowColor,
+                                (index % 2 == 0 ) ? this._tableStyle.EvenRowColor : this._tableStyle.RowColor,
                                 string.Format(formatter, result));
                             break;
                         }

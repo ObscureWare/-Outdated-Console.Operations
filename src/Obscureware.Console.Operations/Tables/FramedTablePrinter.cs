@@ -36,11 +36,11 @@ namespace Obscureware.Console.Operations.Tables
 
     public class FramedTablePrinter : DataTablePrinter
     {
-        private readonly TableStyle printStyle;
+        private readonly TableStyle _printStyle;
 
-        public FramedTablePrinter(IConsole console, TableStyle printStyle) : base(console)
+        public FramedTablePrinter(IConsole console, TableStyle printStyle) : base(console, printStyle)
         {
-            this.printStyle = printStyle;
+            this._printStyle = printStyle;
         }
 
         protected override int ExternalFrameThickness { get; } = 2;

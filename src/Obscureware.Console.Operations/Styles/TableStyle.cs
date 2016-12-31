@@ -30,7 +30,7 @@ namespace Obscureware.Console.Operations.Styles
 {
     using ObscureWare.Console;
 
-    public class TableStyle
+    public class TableStyle : ICoreTableStyle
     {
         internal enum TablePiece : byte
         {
@@ -51,12 +51,12 @@ namespace Obscureware.Console.Operations.Styles
 
         private readonly char[] _frameChars;
 
-        public TableStyle(ConsoleFontColor frameColor, ConsoleFontColor headerColor, ConsoleFontColor oddRowColor, ConsoleFontColor evenRowColor,
+        public TableStyle(ConsoleFontColor frameColor, ConsoleFontColor headerColor, ConsoleFontColor rowColor, ConsoleFontColor evenRowColor,
             string frameChars, char backgroundFiller, TableOverflowContentBehavior overflowBehaviour)
         {
             this.FrameColor = frameColor;
             this.HeaderColor = headerColor;
-            this.OddRowColor = oddRowColor;
+            this.RowColor = rowColor;
             this.EvenRowColor = evenRowColor;
             this.BackgroundFiller = backgroundFiller;
             this.OverflowBehaviour = overflowBehaviour;
@@ -65,7 +65,7 @@ namespace Obscureware.Console.Operations.Styles
 
         public ConsoleFontColor FrameColor { get; private set; }
         public ConsoleFontColor HeaderColor { get; private set; }
-        public ConsoleFontColor OddRowColor { get; private set; }
+        public ConsoleFontColor RowColor { get; private set; }
         public ConsoleFontColor EvenRowColor { get; private set; }
 
         public char BackgroundFiller { get; private set; }

@@ -26,6 +26,9 @@
 //   Defines the DataTablePrinter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+using Obscureware.Console.Operations.Styles;
+
 namespace Obscureware.Console.Operations.Tables
 {
     using System;
@@ -39,12 +42,15 @@ namespace Obscureware.Console.Operations.Tables
     /// </summary>
     public abstract class DataTablePrinter
     {
-        private readonly IConsole _console;
         private const int MIN_SPACE_PER_COLUMN = 3;
 
-        protected DataTablePrinter(IConsole console)
+        private readonly IConsole _console;
+        private readonly ICoreTableStyle _coreStyle;
+
+        protected DataTablePrinter(IConsole console, ICoreTableStyle coreStyle)
         {
             this._console = console;
+            _coreStyle = coreStyle;
         }
 
         /// <summary>
@@ -65,11 +71,11 @@ namespace Obscureware.Console.Operations.Tables
         /// <param name="rows"></param>
         public void PrintTable(ColumnInfo[] columns, string[][] rows)
         {
+            // TODO: replace altering  original columns with producing RuntimeColumnInfo with more fields
             this.CalculateRequiredRowSizes(columns, rows);
 
             int spacingWidth = columns.Length - 1; // This assumes 1-character wide spacing. If in need of using internal margins will have to ekspose rerlated property from inheriting class
             int totalAvailableWidth = this.Console.WindowWidth - 1 - this.ExternalFrameThickness; // -1 for ENDL - need to not overflow, to avoid empty lines
-            // TODO: replace with write, cut on the end and 
             int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
 
             int totalFixedWidth = columns.Where(col => col.HasFixedLength).Sum(col => col.MinLength);
@@ -85,7 +91,7 @@ namespace Obscureware.Console.Operations.Tables
             }
 
             // check if table fits to the screen width
-            if (maxRequiredWidth > totalAvailableWidth)
+            if (maxRequiredWidth > totalAvailableWidth && _coreStyle.OverflowBehaviour == TableOverflowContentBehavior.Ellipsis)
             {
                 int availableWidth = totalAvailableWidth - spacingWidth - totalFixedWidth;
                 float scale = (float)this.Console.WindowWidth / (float)maxRequiredWidth;
