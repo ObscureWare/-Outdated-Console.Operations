@@ -26,6 +26,9 @@
 //   Defines the SimpleTablePrinter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+using Obscureware.Shared;
+
 namespace Obscureware.Console.Operations.Tables
 {
     using System;
@@ -87,7 +90,38 @@ namespace Obscureware.Console.Operations.Tables
                     }
                     case TableOverflowContentBehavior.Wrap:
                     {
-                        throw new NotImplementedException();
+                        bool allCellsFit = true;
+                        for (int r = 0; r < row.Length && r < columns.Length; r++)
+                        {
+                            if (row[r].Length > columns[r].CurrentLength)
+                            {
+                                allCellsFit = false;
+                                break;
+                            }
+                        }
+
+                        if (allCellsFit)
+                        {
+                            this.Console.WriteLine(this.style.RowColor, string.Format(formatter, row));
+                        }
+                        else
+                        {
+                            List<string[]> stacks = new List<string[]>(columns.Length);
+                            for (int i = 0; i < columns.Length && i < row.Length; i++)
+                            {
+                                stacks.Add(row[i].SplitTextToFit((uint) columns[i].CurrentLength).ToArray());
+                            }
+
+                            var tallestStack = stacks.Max(st => st.Length);
+                            for (int stIndex = 0; stIndex < tallestStack; stIndex++)
+                            {
+                                string[] content = stacks.Select(st => (st.Length > stIndex) ? st[stIndex] : "").ToArray();
+                                this.Console.WriteLine(this.style.RowColor, string.Format(formatter, content));
+                            }
+                        }
+
+                        // write extra wmpty line to separate rows - simple table does not have any coloring for odd / even rows
+                        this.Console.WriteLine(this.style.RowColor, string.Format(formatter, new string[columns.Length]));
                         break;
                     }
                     default:

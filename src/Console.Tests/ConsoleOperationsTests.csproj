@@ -60,6 +60,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Obscureware.Shared\src\Obscureware.Shared\Obscureware.Shared.csproj">
+      <Project>{286F5FE3-B75F-41B0-98BF-095F4617513A}</Project>
+      <Name>Obscureware.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Obscureware.Console.Operations\Obscureware.Console.Operations.csproj">
       <Project>{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}</Project>
       <Name>Obscureware.Console.Operations</Name>

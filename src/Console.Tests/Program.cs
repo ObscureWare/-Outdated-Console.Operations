@@ -26,6 +26,9 @@
 //   Just some DEMO stuff. Used for visual testing.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+using Obscureware.Shared;
+
 namespace ConsoleTests
 {
     using System;
@@ -57,12 +60,24 @@ namespace ConsoleTests
             IConsole console = new SystemConsole(controller, isFullScreen: false);
             ConsoleOperations ops = new ConsoleOperations(console);
 
+            SplitterTest();
             //PrintColorsMessages(console);
             //PrintAllNamedColors(controller, console);
             //PrintFrames(ops, console);
             PrintTables(console);
 
             console.ReadLine();
+        }
+
+        private static void SplitterTest()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                string str = TestTools.AlphaSentence.BuildRandomStringFrom(20, 50);
+                string[] split = str.SplitTextToFit(15).ToArray();
+
+                Console.WriteLine(str + " => " + string.Join("|", split));
+            }
         }
 
         private static void PrintTables(IConsole console)
@@ -80,6 +95,15 @@ namespace ConsoleTests
                 @"|-||||-||-|--", // simple, ascii table
                 ' ',
                 TableOverflowContentBehavior.Ellipsis);
+
+            TableStyle wrappingTableStyle = new TableStyle(
+                tableFrameColor,
+                tableHeaderColor,
+                tableOddRowColor,
+                tableEvenRowColor,
+                @"|-||||-||-|--", // simple, ascii table
+                ' ',
+                TableOverflowContentBehavior.Wrap);
 
             var headers = new[] {"Row 1", "Longer row 2", "Third row"};
             var values = new[]
@@ -108,13 +132,24 @@ namespace ConsoleTests
                     i.ToString(),
                     new[]
                         {
-                            TestTools.AlphaSentence.BuildRandomStringFrom(5, 10).Trim(), TestTools.AlphaSentence.BuildRandomStringFrom(4, 15).Trim(),
-                            TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture), TestTools.GetRandomFloat(30000).ToString("N2", CultureInfo.CurrentCulture)
+                            TestTools.AlphaSentence.BuildRandomStringFrom(5, 10).Trim(),
+                            TestTools.AlphaSentence.BuildRandomStringFrom(4, 15).Trim(),
+                            TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture),
+                            TestTools.GetRandomFloat(30000).ToString("N2", CultureInfo.CurrentCulture)
                         });
             }
 
             SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableEvenRowColor));
             simpleTablePrinter.PrintTable(dt);
+            Console.WriteLine();
+
+            var simpleTableWithWrapping = new SimpleTablePrinter(
+                console,
+                new SimpleTableStyle(
+                    tableHeaderColor,
+                    tableEvenRowColor,
+                    TableOverflowContentBehavior.Wrap));
+            simpleTableWithWrapping.PrintTable(dt);
             Console.WriteLine();
 
             FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
@@ -123,6 +158,10 @@ namespace ConsoleTests
 
             SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
             specflowPrinter.PrintTable(dt);
+            Console.WriteLine();
+
+            var specflowTableWithWrapping = new SpeflowStyleTablePrinter(console, wrappingTableStyle);
+            specflowTableWithWrapping.PrintTable(dt);
             Console.WriteLine();
 
             Console.ReadLine();
@@ -162,11 +201,20 @@ namespace ConsoleTests
 
             simpleTablePrinter.PrintTable(dt);
             Console.WriteLine();
+            
+            simpleTableWithWrapping.PrintTable(dt);
+            Console.WriteLine();
 
             framedPrinter.PrintTable(dt);
             Console.WriteLine();
 
+            // TODO: also wrapping framed table
+
             specflowPrinter.PrintTable(dt);
+            Console.WriteLine();
+
+            specflowTableWithWrapping.PrintTable(dt);
+            Console.WriteLine();
 
             console.WriteLine(tableFrameColor, "");
             Console.ReadLine();

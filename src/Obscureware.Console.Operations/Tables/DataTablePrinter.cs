@@ -91,7 +91,7 @@ namespace Obscureware.Console.Operations.Tables
             }
 
             // check if table fits to the screen width
-            if (maxRequiredWidth > totalAvailableWidth && _coreStyle.OverflowBehaviour == TableOverflowContentBehavior.Ellipsis)
+            if (maxRequiredWidth > totalAvailableWidth)
             {
                 int availableWidth = totalAvailableWidth - spacingWidth - totalFixedWidth;
                 float scale = (float)this.Console.WindowWidth / (float)maxRequiredWidth;
