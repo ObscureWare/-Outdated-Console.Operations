@@ -143,7 +143,7 @@ namespace ConsoleTests
                 new ColumnInfo("Column C", ColumnAlignment.Left),
                 new ColumnInfo("Column V1", ColumnAlignment.Right, minLength: 9),
                 new ColumnInfo("Column V2", ColumnAlignment.Right, minLength: 9),
-                new ColumnInfo("Column VXX", ColumnAlignment.Right, minLength: 14));
+                new ColumnInfo("Column VXX", ColumnAlignment.Right, minLength: 12));
 
             for (int i = 0; i < 20; i++)
             {

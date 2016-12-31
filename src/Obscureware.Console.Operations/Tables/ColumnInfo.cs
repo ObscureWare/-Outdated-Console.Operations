@@ -55,5 +55,10 @@ namespace Obscureware.Console.Operations.Tables
         public int CurrentLength { get; internal set; } // TODO: or perhaps totally internal?
 
         public ColumnAlignment Alignment { get; set; }
+
+        public bool HasFixedLength
+        {
+            get { return this.MinLength > 0; }
+        }
     }
 }

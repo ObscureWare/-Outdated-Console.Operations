@@ -40,6 +40,7 @@ namespace Obscureware.Console.Operations.Tables
     public abstract class DataTablePrinter
     {
         private readonly IConsole _console;
+        private const int MIN_SPACE_PER_COLUMN = 3;
 
         protected DataTablePrinter(IConsole console)
         {
@@ -66,21 +67,37 @@ namespace Obscureware.Console.Operations.Tables
         {
             this.CalculateRequiredRowSizes(columns, rows);
 
-            int spacingWidth = columns.Length - 1;
+            int spacingWidth = columns.Length - 1; // This assumes 1-character wide spacing. If in need of using internal margins will have to ekspose rerlated property from inheriting class
             int totalAvailableWidth = this.Console.WindowWidth - 1 - this.ExternalFrameThickness; // -1 for ENDL - need to not overflow, to avoid empty lines
             // TODO: replace with write, cut on the end and 
             int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
 
+            int totalFixedWidth = columns.Where(col => col.HasFixedLength).Sum(col => col.MinLength);
+            if (totalFixedWidth > totalAvailableWidth)
+            {
+                throw new ArgumentException("Total length of fixed-length columns exceed total available area.", nameof(columns));
+            }
+
+            int fixedColumnsCount = columns.Count(col => col.HasFixedLength);
+            if ((totalAvailableWidth - totalFixedWidth) / (columns.Length - fixedColumnsCount) < MIN_SPACE_PER_COLUMN)
+            {
+                throw new ArgumentException($"Fixed-length columns leave not enough space for remaining columns. It shall be no les than {MIN_SPACE_PER_COLUMN} characters per non-fixed-length column. Or you have just declared too many columns for current console resolution.", nameof(columns));
+            }
+
             // check if table fits to the screen width
             if (maxRequiredWidth > totalAvailableWidth)
             {
-                int availableWidth = totalAvailableWidth - spacingWidth;
+                int availableWidth = totalAvailableWidth - spacingWidth - totalFixedWidth;
                 float scale = (float)this.Console.WindowWidth / (float)maxRequiredWidth;
 
                 for (int i = 0; i < columns.Length; i++)
                 {
+                    if (columns[i].HasFixedLength)
+                    {
+                        continue;
+                    }
+
                     // TODO:probably round would be as good... gonna check
-                    // TODO: OK, this works bad if the last column has min length - have to deduct all fixed columns from total and then divide content to the others...
                     int newLength = (int)Math.Floor(columns[i].CurrentLength * scale);
                     if (newLength < columns[i].MinLength)
                     {
