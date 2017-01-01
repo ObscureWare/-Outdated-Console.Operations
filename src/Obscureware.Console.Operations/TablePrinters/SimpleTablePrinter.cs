@@ -26,21 +26,19 @@
 //   Defines the SimpleTablePrinter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-using Obscureware.Shared;
-
-namespace Obscureware.Console.Operations.Tables
+namespace Obscureware.Console.Operations.TablePrinters
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using ObscureWare.Console;
+    using Shared;
     using Styles;
+    using Tables;
 
     public class SimpleTablePrinter : DataTablePrinter
     {
-        private readonly ICoreTableStyle style;
+        private readonly ICoreTableStyle _style;
 
         public SimpleTablePrinter(IConsole console, ICoreTableStyle style): base(console, style)
         {
@@ -49,22 +47,30 @@ namespace Obscureware.Console.Operations.Tables
                 throw new ArgumentNullException(nameof(style));
             }
 
-            this.style = style;
+            this._style = style;
         }
 
         protected override int ExternalFrameThickness { get; } = 0; // no external frame
 
         protected override void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows)
         {
+            // TODO: implement and use Console.BatchPrint()! - atomic operation
+
             int index = 0;
             string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}"));
 
-            //this.Console.WriteLine(this.style.HeaderColor, string.Format(formatter, columns.Select(col => col.Header).ToArray()));
-            this.Console.WriteLine(this.style.HeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
-            
+            if (this._style.ShowHeader)
+            {
+                this.Console.WriteLine(this._style.HeaderColor,
+                    string.Format(formatter,
+                        columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength)))
+                            .ToArray()));
+            }
+
+            index = 0;
             foreach (string[] row in rows)
             {
-                switch (this.style.OverflowBehaviour)
+                switch (this._style.OverflowBehaviour)
                 {
                     case TableOverflowContentBehavior.Ellipsis:
                     {
@@ -85,7 +91,9 @@ namespace Obscureware.Console.Operations.Tables
                             }
                         }
 
-                        this.Console.WriteLine(this.style.RowColor, string.Format(formatter, result));
+                        this.Console.WriteLine(
+                            (index % 2 == 0) ? this._style.EvenRowColor : this._style.RowColor,
+                            string.Format(formatter, result));
                         break;
                     }
                     case TableOverflowContentBehavior.Wrap:
@@ -102,7 +110,9 @@ namespace Obscureware.Console.Operations.Tables
 
                         if (allCellsFit)
                         {
-                            this.Console.WriteLine(this.style.RowColor, string.Format(formatter, row));
+                            this.Console.WriteLine(
+                                (index % 2 == 0) ? this._style.EvenRowColor : this._style.RowColor,
+                                string.Format(formatter, row));
                         }
                         else
                         {
@@ -116,12 +126,15 @@ namespace Obscureware.Console.Operations.Tables
                             for (int stIndex = 0; stIndex < tallestStack; stIndex++)
                             {
                                 string[] content = stacks.Select(st => (st.Length > stIndex) ? st[stIndex] : "").ToArray();
-                                this.Console.WriteLine(this.style.RowColor, string.Format(formatter, content));
+                                this.Console.WriteLine(
+                                    (index % 2 == 0) ? this._style.EvenRowColor : this._style.RowColor,
+                                    string.Format(formatter, content));
                             }
                         }
 
-                        // write extra wmpty line to separate rows - simple table does not have any coloring for odd / even rows
-                        this.Console.WriteLine(this.style.RowColor, string.Format(formatter, new string[columns.Length]));
+                        // write extra empty line to separate rows - simple table does not have any coloring for odd / even rows
+                        // looks bad, do not - coloring rows instead...
+                        //this.Console.WriteLine(this._style.RowColor, string.Format(formatter, new string[columns.Length]));
                         break;
                     }
                     default:
@@ -129,10 +142,10 @@ namespace Obscureware.Console.Operations.Tables
                         throw new ArgumentOutOfRangeException(nameof(TableOverflowContentBehavior));
                     }
                 }
+
+                index++;
+
             }
-
-
-            // TODO: implement and use Console.BatchPrint()! - atomic operation
         }
     }
 }

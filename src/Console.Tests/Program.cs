@@ -40,6 +40,7 @@ namespace ConsoleTests
 
     using Obscureware.Console.Operations;
     using Obscureware.Console.Operations.Styles;
+    using Obscureware.Console.Operations.TablePrinters;
     using Obscureware.Console.Operations.Tables;
 
     using ObscureWare.Console;
@@ -84,7 +85,7 @@ namespace ConsoleTests
         {
             var tableFrameColor = new ConsoleFontColor(Color.Silver, Color.Black);
             var tableHeaderColor = new ConsoleFontColor(Color.White, Color.Black);
-            var tableOddRowColor = new ConsoleFontColor(Color.DarkGoldenrod, Color.Black);
+            var tableOddRowColor = new ConsoleFontColor(Color.Silver, Color.Black);
             var tableEvenRowColor = new ConsoleFontColor(Color.DimGray, Color.Black);
 
             TableStyle tableStyle = new TableStyle(
@@ -115,6 +116,19 @@ namespace ConsoleTests
                 new[] {"1df ds fsd fsfs fsdf s", "2234  4234 23", "3 23423423"},
             };
 
+            var simpleTableStyleWithWrap = new SimpleTableStyle(
+                tableHeaderColor,
+                tableEvenRowColor,
+                TableOverflowContentBehavior.Wrap)
+            {
+                EvenRowColor = tableOddRowColor
+            };
+
+            var simpleTableStyleWithEllipsis = new SimpleTableStyle(tableHeaderColor, tableEvenRowColor)
+            {
+                EvenRowColor = tableOddRowColor
+            };
+
             // ops.WriteTabelaricData(5, 5, 50, headers, values, tableStyle);
 
 
@@ -139,28 +153,24 @@ namespace ConsoleTests
                         });
             }
 
-            SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, new SimpleTableStyle(tableHeaderColor, tableEvenRowColor));
+            SimpleTablePrinter simpleTablePrinter = new SimpleTablePrinter(console, simpleTableStyleWithEllipsis);
+            SimpleTablePrinter simpleTableWithWrapping = new SimpleTablePrinter(console, simpleTableStyleWithWrap);
+            FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
+            SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
+            var specflowTableWithWrapping = new SpeflowStyleTablePrinter(console, wrappingTableStyle);
+
             simpleTablePrinter.PrintTable(dt);
             Console.WriteLine();
-
-            var simpleTableWithWrapping = new SimpleTablePrinter(
-                console,
-                new SimpleTableStyle(
-                    tableHeaderColor,
-                    tableEvenRowColor,
-                    TableOverflowContentBehavior.Wrap));
+            
             simpleTableWithWrapping.PrintTable(dt);
             Console.WriteLine();
-
-            FramedTablePrinter framedPrinter = new FramedTablePrinter(console, tableStyle);
+            
             framedPrinter.PrintTable(dt);
             Console.WriteLine();
-
-            SpeflowStyleTablePrinter specflowPrinter = new SpeflowStyleTablePrinter(console, tableStyle);
+            
             specflowPrinter.PrintTable(dt);
             Console.WriteLine();
-
-            var specflowTableWithWrapping = new SpeflowStyleTablePrinter(console, wrappingTableStyle);
+            
             specflowTableWithWrapping.PrintTable(dt);
             Console.WriteLine();
 

@@ -26,13 +26,14 @@
 //   Defines the FramedTablePrinter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations.Tables
+namespace Obscureware.Console.Operations.TablePrinters
 {
     using System;
     using System.Collections.Generic;
 
     using ObscureWare.Console;
     using Styles;
+    using Tables;
 
     public class FramedTablePrinter : DataTablePrinter
     {

@@ -36,6 +36,22 @@ namespace Obscureware.Console.Operations.Styles
 
         ConsoleFontColor RowColor { get; }
 
+        ConsoleFontColor EvenRowColor { get; }
+
+        /// <summary>
+        /// Gets whether table printer shall display column header(s)
+        /// </summary>
+        bool ShowHeader { get; }
+
+        /// <summary>
+        /// Gets whether table printing shall be done in atomic operation (might be considerably slower) or not.
+        /// This might not be required in some scenarios, so better one have choice.
+        /// </summary>
+        bool AtomicPrinting { get; }
+
+        /// <summary>
+        /// Specifies how overflowing cell values shall be treated - clipped or splitted.
+        /// </summary>
         TableOverflowContentBehavior OverflowBehaviour { get; }
     }
 }

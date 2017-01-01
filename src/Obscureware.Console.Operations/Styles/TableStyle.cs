@@ -97,5 +97,11 @@ namespace Obscureware.Console.Operations.Styles
         public char TopConnector => this._frameChars[(byte)TablePiece.TopConnector];
 
         public char BottomConnector => this._frameChars[(byte)TablePiece.BottomConnector];
+
+        /// <inheritdoc />
+        public bool ShowHeader { get; } = true;
+
+        /// <inheritdoc />
+        public bool AtomicPrinting { get; } = true;
     }
 }

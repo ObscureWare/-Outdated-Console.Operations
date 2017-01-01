@@ -27,15 +27,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Obscureware.Shared;
-
-namespace Obscureware.Console.Operations.Tables
+namespace Obscureware.Console.Operations.TablePrinters
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using ObscureWare.Console;
+    using Shared;
     using Styles;
+    using Tables;
 
     public class SpeflowStyleTablePrinter : DataTablePrinter
     {
@@ -50,10 +50,16 @@ namespace Obscureware.Console.Operations.Tables
 
         protected override void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows)
         {
+            // TODO: implement and use Console.BatchPrint()! - atomic operation
+
             int index = 0;
             string formatter = "|" + string.Join("|", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}")) + "|";
 
-            this.Console.WriteLine(this._tableStyle.HeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
+            if (this._tableStyle.ShowHeader)
+            {
+                this.Console.WriteLine(this._tableStyle.HeaderColor, string.Format(formatter, columns.Select(col => col.Header.Substring(0, Math.Min(col.Header.Length, col.CurrentLength))).ToArray()));
+            }
+
             // TODO: WriteText + this.Console.AdvanceLine();
 
             // TODO: add different coloring to the frame
@@ -130,9 +136,6 @@ namespace Obscureware.Console.Operations.Tables
 
                 index++;
             }
-
-
-            // TODO: implement and use Console.BatchPrint()! - atomic operation
         }
     }
 }

@@ -32,7 +32,12 @@ namespace Obscureware.Console.Operations.Styles
 
     public class SimpleTableStyle : ICoreTableStyle
     {
-        public SimpleTableStyle(ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor, TableOverflowContentBehavior overflowBehavior = TableOverflowContentBehavior.Ellipsis)
+        private ConsoleFontColor? _evenRowColor;
+
+        public SimpleTableStyle(
+            ConsoleFontColor tableHeaderColor,
+            ConsoleFontColor tableRowColor,
+            TableOverflowContentBehavior overflowBehavior = TableOverflowContentBehavior.Ellipsis)
         {
             this.HeaderColor = tableHeaderColor;
             this.RowColor = tableRowColor;
@@ -45,5 +50,18 @@ namespace Obscureware.Console.Operations.Styles
 
         /// <inheritdoc />
         public TableOverflowContentBehavior OverflowBehaviour { get; set; }
+
+        /// <inheritdoc />
+        public ConsoleFontColor EvenRowColor
+        {
+            get { return this._evenRowColor ?? this.RowColor; }
+            set { this._evenRowColor = value; }
+        }
+
+        /// <inheritdoc />
+        public bool ShowHeader { get; } = true;
+
+        /// <inheritdoc />
+        public bool AtomicPrinting { get; set; } = false;
     }
 }
