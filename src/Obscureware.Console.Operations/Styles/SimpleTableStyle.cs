@@ -59,7 +59,7 @@ namespace Obscureware.Console.Operations.Styles
         }
 
         /// <inheritdoc />
-        public bool ShowHeader { get; } = true;
+        public bool ShowHeader { get; set; } = true;
 
         /// <inheritdoc />
         public bool AtomicPrinting { get; set; } = false;
