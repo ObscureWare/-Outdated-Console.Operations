@@ -132,7 +132,7 @@ namespace ConsoleTests
                     i.ToString(),
                     new[]
                         {
-                            TestTools.AlphaSentence.BuildRandomStringFrom(5, 10).Trim(),
+                            TestTools.AlphanumericIdentifier.BuildRandomStringFrom(5, 10).Trim(),
                             TestTools.AlphaSentence.BuildRandomStringFrom(4, 15).Trim(),
                             TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture),
                             TestTools.GetRandomFloat(30000).ToString("N2", CultureInfo.CurrentCulture)
@@ -190,8 +190,8 @@ namespace ConsoleTests
                     i.ToString(),
                     new[]
                         {
-                            TestTools.AlphaSentence.BuildRandomStringFrom(10, 15).Trim(),
-                            TestTools.AlphaSentence.BuildRandomStringFrom(8, 40).Trim(),
+                            TestTools.UpperAlphanumeric.BuildRandomStringFrom(10, 15).Trim(),
+                            TestTools.AlphanumericIdentifier.BuildRandomStringFrom(8, 40).Trim(),
                             TestTools.AlphaSentence.BuildRandomStringFrom(20, 50).Trim(),
                             TestTools.GetRandomFloat(10000).ToString("N2", CultureInfo.CurrentCulture),
                             TestTools.GetRandomFloat(50000).ToString("N2", CultureInfo.CurrentCulture),
@@ -351,8 +351,8 @@ namespace ConsoleTests
 
         public static string MixedAlphanumeric => UpperAlphanumeric + LowerAlphanumeric;
 
-        public static string AlphanumericIdentifier => UpperAlphanumeric + LowerAlphanumeric + @"______"; // increased probability ;-)
+        public static string AlphanumericIdentifier => UpperAlphanumeric + LowerAlphanumeric + @"_____"; // increased probability ;-)
 
-        public static string AlphaSentence => LowerAlpha + @"      "; // increased probability ;-)
+        public static string AlphaSentence => LowerAlpha + @" .:! ,? ;"; // increased probability ;-)
     }
 }
