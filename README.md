@@ -266,8 +266,10 @@ ConsoleOperations ops = new ConsoleOperations(console);
     ```
     
     (From version 0.1.9)
-    (First table in each pair is in Ellipsis behaviour, second in Wrapping.) 
+    (First table in each pair is in Ellipsis behaviour, second in Wrapping.)
+    
     *One can still se error in splitting algorithm, when single punctuation character does not fit into last line...*
+    This has been fixed in version 0.1.11.
 
     ![](https://github.com/ObscureWare/Console.Operations/blob/master/demo/small_tables_0_1_9.png)
 
