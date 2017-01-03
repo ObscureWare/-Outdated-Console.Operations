@@ -61,13 +61,36 @@ namespace ConsoleTests
             IConsole console = new SystemConsole(controller, isFullScreen: false);
             ConsoleOperations ops = new ConsoleOperations(console);
 
-            SplitterTest();
+            //SplitterTest();
             //PrintColorsMessages(console);
             //PrintAllNamedColors(controller, console);
             //PrintFrames(ops, console);
-            PrintTables(console);
+            //PrintTables(console);
+
+            SimulateConsole(console);
+
 
             console.ReadLine();
+        }
+
+        private static void SimulateConsole(IConsole console)
+        {
+            var promptConsoleColor = new ConsoleFontColor(Color.LightSkyBlue, Color.Black);
+            var cmdColor = new ConsoleFontColor(Color.LightGray, Color.Black);
+            var retypeColor = new ConsoleFontColor(Color.Lime, Color.Black);
+
+            VirtualEntryLine cmdSimulator = new VirtualEntryLine(console, cmdColor);
+
+            var fakeAutocompleter = new TestAutoCompleter("abcd", "aabbdd", "nbbdbd", "sdsdsds", "sddsdssfdf", "abc");
+            string cmd = "";
+            while (cmd.ToUpper() != "EXIT")
+            {
+                console.WriteText(promptConsoleColor, "c:\\");
+                cmd = cmdSimulator.GetUserEntry(fakeAutocompleter);
+                console.WriteLine();
+                console.WriteLine(retypeColor, cmd);
+                console.WriteLine();
+            }
         }
 
         private static void SplitterTest()
@@ -305,64 +328,4 @@ namespace ConsoleTests
     }
 
     // TODO: move to separate library of testing tools... tomorrow ;-)
-    internal static class TestTools
-    {
-        private static readonly Random rnd = new Random();
-
-        public static float GetRandomFloat()
-        {
-            return (float)rnd.NextDouble(); // TODO: add float type (Real, NegativeReal, PositiveReal) and range selection
-        }
-
-        public static float GetRandomFloat(int multiplier)
-        {
-            return GetRandomFloat() * multiplier;
-        }
-
-        /// <summary>
-        /// Builds string of required length concatenating random characters from given string.
-        /// </summary>
-        /// <param name="sourceString"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        public static string BuildRandomStringFrom(this string sourceString, uint length)
-        {
-            char[] array = new char[length];
-            for (int i = 0; i < length; i++)
-            {
-                array[i] = sourceString[rnd.Next(0, sourceString.Length)];
-            }
-
-            return new string(array);
-        }
-
-        public static string BuildRandomStringFrom(this string sourceString, int minLength, int maxLength)
-        {
-            int length = rnd.Next(minLength, maxLength + 1);
-
-            char[] array = new char[length];
-            for (int i = 0; i < length; i++)
-            {
-                array[i] = sourceString[rnd.Next(0, sourceString.Length)];
-            }
-
-            return new string(array);
-        }
-
-        public static string Numeric => @"0123456789";
-
-        public static string UpperAlpha => @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        public static string LowerAlpha => @"abcdefghijklmnopqrstuvwxyz";
-
-        public static string UpperAlphanumeric => UpperAlpha + Numeric;
-
-        public static string LowerAlphanumeric => LowerAlpha + Numeric;
-
-        public static string MixedAlphanumeric => UpperAlphanumeric + LowerAlphanumeric;
-
-        public static string AlphanumericIdentifier => UpperAlphanumeric + LowerAlphanumeric + @"_____"; // increased probability ;-)
-
-        public static string AlphaSentence => LowerAlpha + @" .:! ,? ;"; // increased probability ;-)
-    }
 }
