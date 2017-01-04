@@ -33,6 +33,8 @@ namespace ObscureWare.Console.Operations
     using System.Text;
     using System.Threading.Tasks;
     using System.Collections.Generic;
+    using System.Drawing;
+
     using ObscureWare.Console;
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace ObscureWare.Console.Operations
         private readonly IConsole _console;
         private readonly ConsoleFontColor _cmdColor;
         private readonly List<string> _commandHistory = new List<string>();
+        int historyIndex = -1;
 
         public VirtualEntryLine(IConsole console, ConsoleFontColor cmdColor)
         {
@@ -67,6 +70,8 @@ namespace ObscureWare.Console.Operations
             var startPosition = this._console.GetCursorPosition();
             var firstLineIndent = startPosition.X;
             var consoleLineWidth = this._console.WindowWidth;
+            var longestLineContentSoFar = 0;
+            
             int currentCommandEndIndex = 0;
             char[] commandBuffer = new char[MAX_COMMAND_LENGTH];
 
@@ -84,12 +89,11 @@ namespace ObscureWare.Console.Operations
                     if (!string.IsNullOrWhiteSpace(cmdContent))
                     {
                         this._commandHistory.Add(cmdContent);
+                        historyIndex = this._commandHistory.Count - 1;
                     }
                     return cmdContent;
                 }
-
-                // TODO: support correct position calculation when line crosses end of line... (multiline)
-
+                
                 if (key.Key == ConsoleKey.Tab)
                 {
                     if (autocompleteList == null)
@@ -119,15 +123,13 @@ namespace ObscureWare.Console.Operations
                             }
                         }
                         
-                        // TODO: clean line from longer content? how?!?!?! Remember max length so far?
                         string acText = autocompleteList[autocompleteIndex];
-                        // TODO: write text to array first...
-                        this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                        this._console.WriteText(this._cmdColor, acText);
+                        this.ApplyText(acText, this._console, commandBuffer, startPosition, ref longestLineContentSoFar, ref currentCommandEndIndex);
                     }
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
+                    // TODO: multiline fix
                     var currentPosition = this._console.GetCursorPosition();
                     var deltaX = currentPosition.X - startPosition.X;
                     if (deltaX > 0)
@@ -141,6 +143,7 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.LeftArrow)
                 {
+                    // TODO: multiline fix
                     var currentPosition = this._console.GetCursorPosition();
                     var deltaX = currentPosition.X - startPosition.X;
                     if (deltaX > 0)
@@ -151,6 +154,7 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.RightArrow)
                 {
+                    // TODO: multiline fix
                     var currentPosition = this._console.GetCursorPosition();
                     var deltaX = currentPosition.X - startPosition.X;
                     if (deltaX < currentCommandEndIndex)
@@ -160,11 +164,13 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.UpArrow)
                 {
-                    // TODO: browse history if nothing entered or move cursor between lines
+                    // TODO: multiline fix
+                    // TODO:  move cursor between lines
                 }
                 else if (key.Key == ConsoleKey.DownArrow)
                 {
-                    // TODO: browse history if nothing entered or move cursor between lines
+                    // TODO: multiline fix
+                    // TODO:  move cursor between lines
                 }
                 else if (key.Key == ConsoleKey.Insert)
                 {
@@ -174,11 +180,41 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.End)
                 {
+                    // TODO: multiline fix
                     // TODO: move to end
                 }
                 else if (key.Key == ConsoleKey.Home)
                 {
+                    // TODO: multiline fix
                     // TODO: move to front
+                }
+                else if (key.Key == ConsoleKey.PageUp)
+                {
+                    if (this.historyIndex < this._commandHistory.Count && this.historyIndex >= 0)
+                    {
+                        string historyEntry = this._commandHistory[this.historyIndex--];
+                        // looping?
+                        //if (historyIndex < 0)
+                        //{
+                        //    historyIndex = this._commandHistory.Count - 1;
+                        //}
+
+                        this.ApplyText(historyEntry, this._console, commandBuffer, startPosition, ref longestLineContentSoFar, ref currentCommandEndIndex);
+                    }
+                }
+                else if (key.Key == ConsoleKey.PageDown)
+                {
+                    if (this.historyIndex < this._commandHistory.Count && this.historyIndex >= 0)
+                    {
+                        string historyEntry = this._commandHistory[this.historyIndex++];
+                        // looping?
+                        //if (historyIndex >= this._commandHistory.Count)
+                        //{
+                        //    historyIndex = 0;
+                        //}
+
+                        this.ApplyText(historyEntry, this._console, commandBuffer, startPosition, ref longestLineContentSoFar, ref currentCommandEndIndex);
+                    }
                 }
                 else if (key.Key == ConsoleKey.Escape)
                 {
@@ -209,6 +245,19 @@ namespace ObscureWare.Console.Operations
                     // delete, esc
                 }
             }
+        }
+
+        private void ApplyText(string text, IConsole console, char[] commandBuffer, Point startPosition, 
+            ref int lineContentSoFar, ref int currentCommandEndIndex)
+        {
+            var textLength = text.Length;
+            currentCommandEndIndex = textLength - 1;
+            lineContentSoFar = Math.Max(lineContentSoFar, textLength);
+            text.ToCharArray().CopyTo(commandBuffer, 0);
+            console.SetCursorPosition(startPosition.X, startPosition.Y);
+            console.WriteText(this._cmdColor, new string(' ', lineContentSoFar));
+            console.SetCursorPosition(startPosition.X, startPosition.Y);
+            console.WriteText(this._cmdColor, text);
         }
 
         private void RemoveCharsAt(char[] buffer, int from, int qty)

@@ -69,7 +69,7 @@
     <Compile Include="TablePrinters\SpeflowStyleTablePrinter.cs" />
     <Compile Include="TestAutoCompleter.cs" />
     <Compile Include="TextColumnInfo.cs" />
-    <Compile Include="VirtualEntryLIne.cs" />
+    <Compile Include="VirtualEntryLine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Obscureware.Console.Operations.License.txt" />
