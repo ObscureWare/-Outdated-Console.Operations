@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Obscureware.Shared", "..\..\Obscureware.Shared\src\Obscureware.Shared\Obscureware.Shared.csproj", "{286F5FE3-B75F-41B0-98BF-095F4617513A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObscureWare.Console.Operations.Tests", "ObscureWare.Console.Operations.Tests\ObscureWare.Console.Operations.Tests.csproj", "{D683CE88-C693-4C21-954C-2A8BC5AA7E31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{286F5FE3-B75F-41B0-98BF-095F4617513A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{286F5FE3-B75F-41B0-98BF-095F4617513A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{286F5FE3-B75F-41B0-98BF-095F4617513A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D683CE88-C693-4C21-954C-2A8BC5AA7E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D683CE88-C693-4C21-954C-2A8BC5AA7E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D683CE88-C693-4C21-954C-2A8BC5AA7E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D683CE88-C693-4C21-954C-2A8BC5AA7E31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

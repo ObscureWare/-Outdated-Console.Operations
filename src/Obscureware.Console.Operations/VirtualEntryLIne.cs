@@ -47,7 +47,8 @@ namespace ObscureWare.Console.Operations
         private readonly IConsole _console;
         private readonly ConsoleFontColor _cmdColor;
         private readonly List<string> _commandHistory = new List<string>();
-        int historyIndex = -1;
+        private int historyIndex = -1;
+        private bool overWriting = false;
 
         public VirtualEntryLine(IConsole console, ConsoleFontColor cmdColor)
         {
@@ -190,17 +191,17 @@ namespace ObscureWare.Console.Operations
                 {
                     // TODO if (shift) => paste
 
-                    // TODO: switch insert mode
+                    // switch insert mode
+                    this.overWriting = !this.overWriting;
                 }
                 else if (key.Key == ConsoleKey.End)
                 {
-                    // TODO: multiline fix
-                    // TODO: move to end
+                    var endOfline = this.CalculateCursorPositionForLineIndex(startPosition, consoleLineWidth, currentCommandEndIndex);
+                    this._console.SetCursorPosition(endOfline.X, endOfline.Y);
                 }
                 else if (key.Key == ConsoleKey.Home)
                 {
-                    // TODO: multiline fix
-                    // TODO: move to front
+                    this._console.SetCursorPosition(startPosition.X, startPosition.Y);
                 }
                 else if (key.Key == ConsoleKey.PageUp)
                 {
@@ -237,6 +238,9 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.KeyChar != 0)
                 {
+                    var currentPosition = this._console.GetCursorPosition();
+                    int lineIndex = this.CalculatePositionInLine(startPosition, currentPosition, consoleLineWidth);
+                    
                     if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control &&
                         key.Key == ConsoleKey.V)
                     {
@@ -246,11 +250,24 @@ namespace ObscureWare.Console.Operations
                     {
                         if (currentCommandEndIndex < MAX_COMMAND_LENGTH)
                         {
-                            commandBuffer[currentCommandEndIndex] = key.KeyChar;
-                            currentCommandEndIndex += 1;
-                            this._console.SetColors(this._cmdColor);
-                            this._console.WriteText(key.KeyChar);
-                            autocompleteList = null;
+                            if (this.overWriting)
+                            {
+                                // TODO: fix
+                                commandBuffer[currentCommandEndIndex] = key.KeyChar;
+                                currentCommandEndIndex += 1;
+                                this._console.SetColors(this._cmdColor);
+                                this._console.WriteText(key.KeyChar);
+                                autocompleteList = null;
+                            }
+                            else
+                            {
+                                // TODO: fix
+                                commandBuffer[currentCommandEndIndex] = key.KeyChar;
+                                currentCommandEndIndex += 1;
+                                this._console.SetColors(this._cmdColor);
+                                this._console.WriteText(key.KeyChar);
+                                autocompleteList = null;
+                            }
                         }
                     }
                 }
@@ -259,6 +276,33 @@ namespace ObscureWare.Console.Operations
                     // delete, esc
                 }
             }
+        }
+
+        /// <summary>
+        /// Calculates real position of cursor in multi-line console line
+        /// </summary>
+        /// <param name="startPosition"></param>
+        /// <param name="currentPosition"></param>
+        /// <param name="consoleLineWidth"></param>
+        /// <returns></returns>
+        internal int CalculatePositionInLine(Point startPosition, Point currentPosition, int consoleLineWidth)
+        {
+            return (currentPosition.Y - startPosition.Y) * consoleLineWidth + currentPosition.X - startPosition.X;
+        }
+
+        /// <summary>
+        /// Calculates where shall put cursor for specific index of multi-lined console line
+        /// </summary>
+        /// <param name="startPosition"></param>
+        /// <param name="consoleLineWidth"></param>
+        /// <param name="targetIndex"></param>
+        /// <returns></returns>
+        internal Point CalculateCursorPositionForLineIndex(Point startPosition, int consoleLineWidth, int targetIndex)
+        {
+            int fullLines = ((targetIndex + startPosition.X) / consoleLineWidth);
+            return new Point(
+                (targetIndex - (fullLines * consoleLineWidth) + startPosition.X),
+                fullLines + startPosition.Y);
         }
 
         private void ApplyText(string text, IConsole console, char[] commandBuffer, Point startPosition, 
