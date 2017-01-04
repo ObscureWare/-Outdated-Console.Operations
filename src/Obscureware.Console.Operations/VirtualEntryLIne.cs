@@ -141,10 +141,13 @@ namespace ObscureWare.Console.Operations
 
                         currentCommandEndIndex -= 1;
 
-                        this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                        this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
+                        if (currentCommandEndIndex >= 0)
+                        {
+                            this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                            this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
 
-                        this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
+                            this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
+                        }
                     }
                 }
                 else if (key.Key == ConsoleKey.Delete)
