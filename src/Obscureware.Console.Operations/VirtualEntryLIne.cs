@@ -61,6 +61,8 @@ namespace ObscureWare.Console.Operations
             this._cmdColor = cmdColor;
         }
 
+
+        // TODO: this method is monstrosity, but it rather not be wise to cut it into pieces... It's slow enough...
         public string GetUserEntry(IAutoComplete acProvider)
         {
             if (acProvider == null)
@@ -69,7 +71,6 @@ namespace ObscureWare.Console.Operations
             }
 
             var startPosition = this._console.GetCursorPosition();
-            var firstLineIndent = startPosition.X;
             var consoleLineWidth = this._console.WindowWidth;
             var longestLineContentSoFar = 0;
             
@@ -89,14 +90,20 @@ namespace ObscureWare.Console.Operations
                     string cmdContent = new string(commandBuffer, 0, currentCommandEndIndex);
                     if (!string.IsNullOrWhiteSpace(cmdContent))
                     {
-                        this._commandHistory.Add(cmdContent);
-                        historyIndex = this._commandHistory.Count - 1;
+                        // remember only new entries (on last position)
+                        if (!this._commandHistory.Any() || !this._commandHistory.Last().Equals(cmdContent))
+                        {
+                            this._commandHistory.Add(cmdContent);
+                            this.historyIndex = this._commandHistory.Count - 1;
+                        }
                     }
                     return cmdContent;
                 }
                 
                 if (key.Key == ConsoleKey.Tab)
                 {
+                    // TODO: hide/ show cursor her? probably not required
+
                     if (autocompleteList == null)
                     {
                         autocompleteList =
@@ -130,25 +137,35 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
-                    // TODO: multiline fix
-                    var currentPosition = this._console.GetCursorPosition();
-                    var deltaX = currentPosition.X - startPosition.X;
-                    if (deltaX > 0)
+                    try
                     {
-                       
-                        this.RemoveCharsAt(commandBuffer, deltaX, 1);
-                        this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                        this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
+                        this._console.HideCursor();
 
-                        currentCommandEndIndex -= 1;
-
-                        if (currentCommandEndIndex >= 0)
+                        // TODO: multiline fix
+                        var currentPosition = this._console.GetCursorPosition();
+                        var deltaX = currentPosition.X - startPosition.X;
+                        if (deltaX > 0)
                         {
-                            this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                            this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
 
-                            this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
+                            this.RemoveCharsAt(commandBuffer, deltaX, 1);
+                            this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                            this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
+
+                            currentCommandEndIndex -= 1;
+
+                            if (currentCommandEndIndex >= 0)
+                            {
+                                this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                                this._console.WriteText(this._cmdColor,
+                                    new string(commandBuffer, 0, currentCommandEndIndex));
+
+                                this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
+                            }
                         }
+                    }
+                    finally
+                    {
+                        this._console.ShowCursor();
                     }
                 }
                 else if (key.Key == ConsoleKey.Delete)
@@ -250,23 +267,44 @@ namespace ObscureWare.Console.Operations
                     {
                         if (currentCommandEndIndex < MAX_COMMAND_LENGTH)
                         {
-                            if (this.overWriting)
+                            if (lineIndex == currentCommandEndIndex)
                             {
-                                // TODO: fix
+                                // append at the end - in both INSERT modes the same
                                 commandBuffer[currentCommandEndIndex] = key.KeyChar;
                                 currentCommandEndIndex += 1;
-                                this._console.SetColors(this._cmdColor);
-                                this._console.WriteText(key.KeyChar);
-                                autocompleteList = null;
+                            }
+                            else if (this.overWriting)
+                            {
+                                // overwrite in the middle
+                                commandBuffer[lineIndex] = key.KeyChar;
                             }
                             else
                             {
-                                // TODO: fix
-                                commandBuffer[currentCommandEndIndex] = key.KeyChar;
-                                currentCommandEndIndex += 1;
+                                // insert in the middle
+                                this.InsertCharsAt(commandBuffer, lineIndex, currentCommandEndIndex, new []{ key.KeyChar });
+                                currentCommandEndIndex++;
+                            }
+
+                            try
+                            {
+                                this._console.HideCursor();
+
+                                this._console.SetCursorPosition(startPosition.X, startPosition.Y);
                                 this._console.SetColors(this._cmdColor);
-                                this._console.WriteText(key.KeyChar);
+                                this._console.WriteText(new string(commandBuffer, 0, currentCommandEndIndex));
+                                if (currentPosition.X < consoleLineWidth)
+                                {
+                                    this._console.SetCursorPosition(currentPosition.X + 1, currentPosition.Y);
+                                }
+                                else
+                                {
+                                    this._console.SetCursorPosition(0, currentPosition.Y + 1);
+                                }
                                 autocompleteList = null;
+                            }
+                            finally
+                            {
+                                this._console.ShowCursor();
                             }
                         }
                     }
@@ -308,14 +346,23 @@ namespace ObscureWare.Console.Operations
         private void ApplyText(string text, IConsole console, char[] commandBuffer, Point startPosition, 
             ref int lineContentSoFar, ref int currentCommandEndIndex)
         {
-            var textLength = text.Length;
-            currentCommandEndIndex = textLength - 1;
-            lineContentSoFar = Math.Max(lineContentSoFar, textLength);
-            text.ToCharArray().CopyTo(commandBuffer, 0);
-            console.SetCursorPosition(startPosition.X, startPosition.Y);
-            console.WriteText(this._cmdColor, new string(' ', lineContentSoFar));
-            console.SetCursorPosition(startPosition.X, startPosition.Y);
-            console.WriteText(this._cmdColor, text);
+            try
+            {
+                this._console.HideCursor();
+
+                var textLength = text.Length;
+                currentCommandEndIndex = textLength - 1;
+                lineContentSoFar = Math.Max(lineContentSoFar, textLength);
+                text.ToCharArray().CopyTo(commandBuffer, 0);
+                console.SetCursorPosition(startPosition.X, startPosition.Y);
+                console.WriteText(this._cmdColor, new string(' ', lineContentSoFar));
+                console.SetCursorPosition(startPosition.X, startPosition.Y);
+                console.WriteText(this._cmdColor, text);
+            }
+            finally
+            {
+                this._console.ShowCursor();
+            }
         }
 
         private void RemoveCharsAt(char[] buffer, int from, int qty)
@@ -323,6 +370,20 @@ namespace ObscureWare.Console.Operations
             for (int i = from; i < from + qty && i < buffer.Length && i > 0; i++)
             {
                 buffer[i - 1] = buffer[i];
+            }
+        }
+
+        private void InsertCharsAt(char[] buffer, int from, int currentUsedMax, char[] newChars)
+        {
+            int newLen = newChars.Length;
+            for (int i = currentUsedMax; i <= buffer.Length + newLen && i >= from; i--)
+            {
+                buffer[i + newLen] = buffer[i];
+            }
+
+            for (int i = 0; i < newLen && i < buffer.Length; i++)
+            {
+                buffer[from + i] = newChars[i];
             }
         }
     }
