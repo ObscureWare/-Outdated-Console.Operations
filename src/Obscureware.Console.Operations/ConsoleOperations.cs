@@ -26,7 +26,7 @@
 //   Defines the ConsoleOperations class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace ObscureWare.Console.Operations
 {
     using System;
     using System.Collections.Generic;
@@ -35,7 +35,8 @@ namespace Obscureware.Console.Operations
     using System.Linq;
 
     using ObscureWare.Console;
-    using Shared;
+    using ObscureWare.Shared;
+
     using Styles;
     using Tables;
 

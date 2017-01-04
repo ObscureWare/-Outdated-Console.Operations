@@ -26,7 +26,7 @@
 //   Defines the VirtualEntryLine class that simulates command line behavior.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace ObscureWare.Console.Operations
 {
     using System;
     using System.Linq;

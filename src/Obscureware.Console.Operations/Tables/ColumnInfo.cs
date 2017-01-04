@@ -26,7 +26,7 @@
 //   Defines the ColumnInfo class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations.Tables
+namespace ObscureWare.Console.Operations.Tables
 {
     using System;
 

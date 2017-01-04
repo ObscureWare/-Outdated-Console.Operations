@@ -37,8 +37,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ObscureWare.Console, Version=0.2.6.33198, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObscureWare.Console.Core.0.2.6.33198\lib\net452\ObscureWare.Console.dll</HintPath>
+    <Reference Include="ObscureWare.Console, Version=0.2.7.16017, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObscureWare.Console.Core.0.2.7.16017\lib\net452\ObscureWare.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FakeAutoCompleter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,9 +64,9 @@
       <Project>{286F5FE3-B75F-41B0-98BF-095F4617513A}</Project>
       <Name>Obscureware.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Obscureware.Console.Operations\Obscureware.Console.Operations.csproj">
+    <ProjectReference Include="..\Obscureware.Console.Operations\ObscureWare.Console.Operations.csproj">
       <Project>{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}</Project>
-      <Name>Obscureware.Console.Operations</Name>
+      <Name>ObscureWare.Console.Operations</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

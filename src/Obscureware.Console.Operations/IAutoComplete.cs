@@ -26,7 +26,7 @@
 //   Defines the IAutoComplete interface.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace ObscureWare.Console.Operations
 {
     using System.Collections.Generic;
 

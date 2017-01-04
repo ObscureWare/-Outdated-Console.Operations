@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This library allows for console operations, like table / frame display. Requires Obscureware.Console.Core to support coloring and console control</description>
     <releaseNotes>Version BETA. Will be extended with more functionality.</releaseNotes>
-    <copyright>Copyright © Sebastian Gruchacz 2016</copyright>
+    <copyright>Copyright © Sebastian Gruchacz 2016-2017</copyright>
     <tags>Console,operations,Management,tables,frames</tags>
   </metadata>
   <files>

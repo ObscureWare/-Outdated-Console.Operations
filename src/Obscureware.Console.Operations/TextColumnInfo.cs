@@ -26,7 +26,7 @@
 //   Defines the TextColumnInfo class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace ObscureWare.Console.Operations
 {
     using System;
     using System.Collections.Generic;

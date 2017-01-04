@@ -38,12 +38,13 @@ namespace ConsoleTests
     using System.Reflection;
     using System.Xml.Schema;
 
-    using Obscureware.Console.Operations;
-    using Obscureware.Console.Operations.Styles;
-    using Obscureware.Console.Operations.TablePrinters;
-    using Obscureware.Console.Operations.Tables;
+    using ObscureWare.Console.Operations;
+    using ObscureWare.Console.Operations.Styles;
+    using ObscureWare.Console.Operations.TablePrinters;
+    using ObscureWare.Console.Operations.Tables;
 
     using ObscureWare.Console;
+    using ObscureWare.Shared;
 
     internal static class Program
     {

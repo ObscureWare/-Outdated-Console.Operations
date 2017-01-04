@@ -26,7 +26,7 @@
 //   Defines the TestAutoCompleter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations
+namespace ObscureWare.Console.Operations
 {
     using System.Collections.Generic;
     using System.Linq;

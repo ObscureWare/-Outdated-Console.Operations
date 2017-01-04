@@ -26,7 +26,7 @@
 //   Defines the SimpleTablePrinter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations.TablePrinters
+namespace ObscureWare.Console.Operations.TablePrinters
 {
     using System;
     using System.Collections.Generic;

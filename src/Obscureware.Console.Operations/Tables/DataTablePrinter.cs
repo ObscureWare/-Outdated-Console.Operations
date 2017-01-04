@@ -27,15 +27,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Obscureware.Console.Operations.Styles;
+using ObscureWare.Console.Operations.Styles;
 
-namespace Obscureware.Console.Operations.Tables
+namespace ObscureWare.Console.Operations.Tables
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using ObscureWare.Console;
+    using ObscureWare.Console.Operations.Styles;
 
     /// <summary>
     /// Base class for printing content of the <see cref="DataTable{T}"/>. Contains base routines for measurement.

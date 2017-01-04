@@ -1,8 +1,8 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SimpleTableStyle.cs" company="Obscureware Solutions">
+// <copyright file="FakeAutoCompleter.cs" company="Obscureware Solutions">
 // MIT License
 //
-// Copyright(c) 2016-2017 Sebastian Gruchacz
+// Copyright(c) 2017 Sebastian Gruchacz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,45 +23,22 @@
 // SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the SimpleTableStyle class.
+//   Defines the FakeAutoCompleter class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace ObscureWare.Console.Operations.Styles
+namespace ObscureWare.Console.Operations
 {
-    using ObscureWare.Console;
+    using System.Collections.Generic;
 
-    public class SimpleTableStyle : ICoreTableStyle
+    /// <summary>
+    /// Fakes auto-completion mechanics, always returning empty list.
+    /// </summary>
+    internal class FakeAutoCompleter : IAutoComplete
     {
-        private ConsoleFontColor? _evenRowColor;
-
-        public SimpleTableStyle(
-            ConsoleFontColor tableHeaderColor,
-            ConsoleFontColor tableRowColor,
-            TableOverflowContentBehavior overflowBehavior = TableOverflowContentBehavior.Ellipsis)
+        /// <inheritdoc />
+        public IEnumerable<string> MatchAutoComplete(string text)
         {
-            this.HeaderColor = tableHeaderColor;
-            this.RowColor = tableRowColor;
-            this.OverflowBehaviour = overflowBehavior;
+            yield break;
         }
-
-        public ConsoleFontColor HeaderColor { get; }
-
-        public ConsoleFontColor RowColor { get; }
-
-        /// <inheritdoc />
-        public TableOverflowContentBehavior OverflowBehaviour { get; set; }
-
-        /// <inheritdoc />
-        public ConsoleFontColor EvenRowColor
-        {
-            get { return this._evenRowColor ?? this.RowColor; }
-            set { this._evenRowColor = value; }
-        }
-
-        /// <inheritdoc />
-        public bool ShowHeader { get; set; } = true;
-
-        /// <inheritdoc />
-        public bool AtomicPrinting { get; set; } = false;
     }
 }

@@ -26,7 +26,7 @@
 //   Defines the ICoreTableStyle interface.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Obscureware.Console.Operations.Styles
+namespace ObscureWare.Console.Operations.Styles
 {
     using ObscureWare.Console;
     

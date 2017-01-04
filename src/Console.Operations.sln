@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Obscureware.Console.Operations", "Obscureware.Console.Operations\Obscureware.Console.Operations.csproj", "{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObscureWare.Console.Operations", "Obscureware.Console.Operations\ObscureWare.Console.Operations.csproj", "{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleOperationsTests", "Console.Tests\ConsoleOperationsTests.csproj", "{CFB16C5C-EE36-4ACE-9513-0AD18DFF9D00}"
 EndProject

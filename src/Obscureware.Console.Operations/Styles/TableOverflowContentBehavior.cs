@@ -1,4 +1,4 @@
-namespace Obscureware.Console.Operations.Styles
+namespace ObscureWare.Console.Operations.Styles
 {
     /// <summary>
     /// Specifies how large content of table rows will be treated

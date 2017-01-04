@@ -7,8 +7,8 @@
     <ProjectGuid>{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Obscureware.Console.Operations</RootNamespace>
-    <AssemblyName>Obscureware.Console.Operations</AssemblyName>
+    <RootNamespace>ObscureWare.Console.Operations</RootNamespace>
+    <AssemblyName>ObscureWare.Console.Operations</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,8 +36,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ObscureWare.Console, Version=0.2.6.33198, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObscureWare.Console.Core.0.2.6.33198\lib\net452\ObscureWare.Console.dll</HintPath>
+    <Reference Include="ObscureWare.Console, Version=0.2.7.16017, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObscureWare.Console.Core.0.2.7.16017\lib\net452\ObscureWare.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleOperations.cs" />
+    <Compile Include="FakeAutoCompleter.cs" />
     <Compile Include="IAutoComplete.cs" />
     <Compile Include="Styles\FrameStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Obscureware.Shared\src\Obscureware.Shared\Obscureware.Shared.csproj">
-      <Project>{286F5FE3-B75F-41B0-98BF-095F4617513A}</Project>
+      <Project>{286f5fe3-b75f-41b0-98bf-095f4617513a}</Project>
       <Name>Obscureware.Shared</Name>
     </ProjectReference>
   </ItemGroup>
