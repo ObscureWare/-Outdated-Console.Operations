@@ -218,9 +218,9 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.PageDown)
                 {
-                    if (this.historyIndex < this._commandHistory.Count && this.historyIndex >= 0)
+                    if (this.historyIndex < this._commandHistory.Count - 1 && this.historyIndex >= -1)
                     {
-                        string historyEntry = this._commandHistory[this.historyIndex++];
+                        string historyEntry = this._commandHistory[++this.historyIndex];
                         // looping?
                         //if (historyIndex >= this._commandHistory.Count)
                         //{
