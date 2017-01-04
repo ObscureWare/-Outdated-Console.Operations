@@ -134,12 +134,23 @@ namespace ObscureWare.Console.Operations
                     var deltaX = currentPosition.X - startPosition.X;
                     if (deltaX > 0)
                     {
+                       
                         this.RemoveCharsAt(commandBuffer, deltaX, 1);
-                        currentCommandEndIndex -= 1;
                         this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                        this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex) + " ");
+                        this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
+
+                        currentCommandEndIndex -= 1;
+
+                        this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                        this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
+
                         this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
                     }
+                }
+                else if (key.Key == ConsoleKey.Delete)
+                {
+                    // TODO: multiline fix
+                    // TODO: implement DELETE key
                 }
                 else if (key.Key == ConsoleKey.LeftArrow)
                 {
