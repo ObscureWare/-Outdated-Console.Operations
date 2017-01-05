@@ -48,10 +48,13 @@ namespace ObscureWare.Console.Operations.Tables
         private readonly IConsole _console;
         private readonly ICoreTableStyle _coreStyle;
 
+        private readonly object _atom;
+
         protected DataTablePrinter(IConsole console, ICoreTableStyle coreStyle)
         {
             this._console = console;
-            _coreStyle = coreStyle;
+            this._coreStyle = coreStyle;
+            this._atom = coreStyle.AtomicPrinting ? console.AtomicHandle : new object();
         }
 
         /// <summary>
@@ -124,7 +127,10 @@ namespace ObscureWare.Console.Operations.Tables
             }
 
             // Now can render table
-            this.RenderTable(columns, rows);
+            lock (this._atom)
+            {
+                this.RenderTable(columns, rows);
+            }
         }
 
         private void CalculateRequiredRowSizes(ColumnInfo[] columns, string[][] rows)

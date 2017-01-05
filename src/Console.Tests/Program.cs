@@ -66,16 +66,18 @@ namespace ConsoleTests
             //PrintColorsMessages(console);
             //PrintAllNamedColors(controller, console);
             //PrintFrames(ops, console);
-            //PrintTables(console);
+            PrintTables(console);
 
             SimulateConsole(console);
 
-
+            Console.WriteLine("Holding console window open. Press ENTER to quit for good.");
             console.ReadLine();
         }
 
         private static void SimulateConsole(IConsole console)
         {
+            console.WriteLine("Starting command line simulator (entry line only, no real commands). Type 'exit' `command` to stop it.");
+
             var promptConsoleColor = new ConsoleFontColor(Color.LightSkyBlue, Color.Black);
             var cmdColor = new ConsoleFontColor(Color.LightGray, Color.Black);
             var retypeColor = new ConsoleFontColor(Color.Lime, Color.Black);

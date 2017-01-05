@@ -54,8 +54,6 @@ namespace ObscureWare.Console.Operations.TablePrinters
 
         protected override void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows)
         {
-            // TODO: implement and use Console.BatchPrint()! - atomic operation
-
             int index = 0;
             string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}"));
 
