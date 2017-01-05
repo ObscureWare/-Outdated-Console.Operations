@@ -86,18 +86,25 @@ namespace ObscureWare.Console.Operations
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    this._console.WriteLine();
-                    string cmdContent = new string(commandBuffer, 0, currentCommandEndIndex);
-                    if (!string.IsNullOrWhiteSpace(cmdContent))
+                    if (currentCommandEndIndex >= 0)
                     {
-                        // remember only new entries (on last position)
-                        if (!this._commandHistory.Any() || !this._commandHistory.Last().Equals(cmdContent))
+                        this._console.WriteLine();
+                        string cmdContent = new string(commandBuffer, 0, currentCommandEndIndex);
+                        if (!string.IsNullOrWhiteSpace(cmdContent))
                         {
-                            this._commandHistory.Add(cmdContent);
-                            this.historyIndex = this._commandHistory.Count - 1;
+                            // remember only new entries (on last position)
+                            if (!this._commandHistory.Any() || !this._commandHistory.Last().Equals(cmdContent))
+                            {
+                                this._commandHistory.Add(cmdContent);
+                                this.historyIndex = this._commandHistory.Count - 1;
+                            }
                         }
+                        return cmdContent;
                     }
-                    return cmdContent;
+                    else
+                    {
+                        return string.Empty;
+                    }
                 }
                 
                 if (key.Key == ConsoleKey.Tab)
@@ -106,8 +113,7 @@ namespace ObscureWare.Console.Operations
 
                     if (autocompleteList == null)
                     {
-                        autocompleteList =
-                            acProvider.MatchAutoComplete(new string(commandBuffer, 0, currentCommandEndIndex)).ToArray();
+                        autocompleteList = acProvider.MatchAutoComplete(new string(commandBuffer, 0, currentCommandEndIndex)).ToArray();
                         autocompleteIndex = -1;
                     }
 
@@ -137,41 +143,65 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
-                    try
+                    if (currentCommandEndIndex > 0)
                     {
-                        this._console.HideCursor();
-
-                        // TODO: multiline fix
-                        var currentPosition = this._console.GetCursorPosition();
-                        var deltaX = currentPosition.X - startPosition.X;
-                        if (deltaX > 0)
+                        try
                         {
+                            this._console.HideCursor();
 
-                            this.RemoveCharsAt(commandBuffer, deltaX, 1);
-                            this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                            this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
-
-                            currentCommandEndIndex -= 1;
-
-                            if (currentCommandEndIndex >= 0)
+                            var currentPosition = this._console.GetCursorPosition();
+                            int lineIndex = this.CalculatePositionInLine(startPosition, currentPosition, consoleLineWidth);
+                            if (lineIndex > 0)
                             {
+                                this.RemoveCharsAt(commandBuffer, lineIndex - 1, 1, ref currentCommandEndIndex);
                                 this._console.SetCursorPosition(startPosition.X, startPosition.Y);
-                                this._console.WriteText(this._cmdColor,
-                                    new string(commandBuffer, 0, currentCommandEndIndex));
+                                this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
 
-                                this._console.SetCursorPosition(startPosition.X + deltaX - 1, startPosition.Y);
+                                if (currentCommandEndIndex >= 0)
+                                {
+                                    this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                                    this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
+
+                                    this._console.SetCursorPosition(currentPosition.X - 1, currentPosition.Y);
+                                }
                             }
                         }
-                    }
-                    finally
-                    {
-                        this._console.ShowCursor();
+                        finally
+                        {
+                            this._console.ShowCursor();
+                        }
                     }
                 }
                 else if (key.Key == ConsoleKey.Delete)
                 {
-                    // TODO: multiline fix
-                    // TODO: implement DELETE key
+                    if (currentCommandEndIndex >= 0)
+                    {
+                        try
+                        {
+                            this._console.HideCursor();
+
+                            var currentPosition = this._console.GetCursorPosition();
+                            int lineIndex = this.CalculatePositionInLine(startPosition, currentPosition, consoleLineWidth);
+                            if (lineIndex >= 0 && lineIndex < currentCommandEndIndex)
+                            {
+                                this.RemoveCharsAt(commandBuffer, lineIndex, 1, ref currentCommandEndIndex);
+                                this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                                this._console.WriteText(this._cmdColor, new string(' ', currentCommandEndIndex + 1));
+
+                                if (currentCommandEndIndex >= 0)
+                                {
+                                    this._console.SetCursorPosition(startPosition.X, startPosition.Y);
+                                    this._console.WriteText(this._cmdColor, new string(commandBuffer, 0, currentCommandEndIndex));
+
+                                    this._console.SetCursorPosition(currentPosition.X, currentPosition.Y);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            this._console.ShowCursor();
+                        }
+                    }
                 }
                 else if (key.Key == ConsoleKey.LeftArrow)
                 {
@@ -351,7 +381,7 @@ namespace ObscureWare.Console.Operations
                 this._console.HideCursor();
 
                 var textLength = text.Length;
-                currentCommandEndIndex = textLength - 1;
+                currentCommandEndIndex = textLength;
                 lineContentSoFar = Math.Max(lineContentSoFar, textLength);
                 text.ToCharArray().CopyTo(commandBuffer, 0);
                 console.SetCursorPosition(startPosition.X, startPosition.Y);
@@ -365,12 +395,14 @@ namespace ObscureWare.Console.Operations
             }
         }
 
-        private void RemoveCharsAt(char[] buffer, int from, int qty)
+        internal void RemoveCharsAt(char[] buffer, int from, int qty, ref int currentCommandEndIndex)
         {
-            for (int i = from; i < from + qty && i < buffer.Length && i > 0; i++)
+            for (int i = from; i < currentCommandEndIndex - qty && i < buffer.Length && i >= 0; i++)
             {
-                buffer[i - 1] = buffer[i];
+                buffer[i] = buffer[i + qty];
             }
+
+            currentCommandEndIndex -= qty;
         }
 
         private void InsertCharsAt(char[] buffer, int from, int currentUsedMax, char[] newChars)

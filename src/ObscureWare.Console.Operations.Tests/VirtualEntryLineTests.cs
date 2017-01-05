@@ -29,8 +29,11 @@
 namespace ObscureWare.Console.Operations.Tests
 {
     using System.Drawing;
+
     using Moq;
+
     using Shouldly;
+
     using Xunit;
 
     public class VirtualEntryLineTests
@@ -43,15 +46,9 @@ namespace ObscureWare.Console.Operations.Tests
         [InlineData(5, 5, 8, 6, 10, 13)]
         public void CalculatePositionInLineShouldCalculateCorrectPositions(int xStart, int yStart, int xCurrent, int yCurrent, int lineLength, int expected)
         {
-            var testedObj = new VirtualEntryLine(
-                new Mock<IConsole>().Object,
-                new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
+            var testedObj = new VirtualEntryLine(new Mock<IConsole>().Object, new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
 
-            testedObj.CalculatePositionInLine(
-                new Point(xStart, yStart),
-                new Point(xCurrent, yCurrent),
-                lineLength)
-                    .ShouldBe(expected);
+            testedObj.CalculatePositionInLine(new Point(xStart, yStart), new Point(xCurrent, yCurrent), lineLength).ShouldBe(expected);
         }
 
         [Theory]
@@ -60,16 +57,35 @@ namespace ObscureWare.Console.Operations.Tests
         [InlineData(5, 5, 10, 10, 5, 6)]
         [InlineData(5, 5, 10, 8, 3, 6)]
         [InlineData(5, 5, 10, 13, 8, 6)]
-        public void CalculateCursorPositionForLineIndexShouldCalculateCorrectPositions(int xStart, int yStart, int lineLength, int targetIndex, int xExpected, int yExpected){
-            var testedObj = new VirtualEntryLine(
-                new Mock<IConsole>().Object,
-                new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
+        public void CalculateCursorPositionForLineIndexShouldCalculateCorrectPositions(int xStart, int yStart, int lineLength, int targetIndex, int xExpected, int yExpected)
+        {
+            var testedObj = new VirtualEntryLine(new Mock<IConsole>().Object, new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
 
-            testedObj.CalculateCursorPositionForLineIndex(
-                new Point(xStart, yStart),
-                lineLength,
-                targetIndex)
-                    .ShouldBe(new Point(xExpected, yExpected));
+            testedObj.CalculateCursorPositionForLineIndex(new Point(xStart, yStart), lineLength, targetIndex).ShouldBe(new Point(xExpected, yExpected));
+        }
+
+        [Theory]
+        [InlineDataAttribute("", 0, 0, "")]
+        [InlineDataAttribute("1", 0, 0, "1")]
+        [InlineDataAttribute("1", 0, 1, "")]
+        [InlineDataAttribute("abc", 0, 1, "bc")]
+        [InlineDataAttribute("abc", 1, 1, "ac")]
+        [InlineDataAttribute("abc", 2, 1, "ab")]
+        public void RemoveCharsAtShallProduceCorrectStrings(string entry, int index, int removeQty, string expectedResult)
+        {
+            var testedObj = new VirtualEntryLine(new Mock<IConsole>().Object, new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
+
+            char[] buffer = entry.ToCharArray();
+            int len = entry.Length;
+
+            testedObj.RemoveCharsAt(buffer, index, removeQty, ref len);
+
+            len.ShouldBe(expectedResult.Length);
+
+            string result = new string(buffer, 0, len);
+
+            result.ShouldBe(expectedResult);
+
         }
     }
 }
