@@ -65,12 +65,12 @@ namespace ObscureWare.Console.Operations.Tests
         }
 
         [Theory]
-        [InlineDataAttribute("", 0, 0, "")]
-        [InlineDataAttribute("1", 0, 0, "1")]
-        [InlineDataAttribute("1", 0, 1, "")]
-        [InlineDataAttribute("abc", 0, 1, "bc")]
-        [InlineDataAttribute("abc", 1, 1, "ac")]
-        [InlineDataAttribute("abc", 2, 1, "ab")]
+        [InlineData("", 0, 0, "")]
+        [InlineData("1", 0, 0, "1")]
+        [InlineData("1", 0, 1, "")]
+        [InlineData("abc", 0, 1, "bc")]
+        [InlineData("abc", 1, 1, "ac")]
+        [InlineData("abc", 2, 1, "ab")]
         public void RemoveCharsAtShallProduceCorrectStrings(string entry, int index, int removeQty, string expectedResult)
         {
             var testedObj = new VirtualEntryLine(new Mock<IConsole>().Object, new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
@@ -81,6 +81,30 @@ namespace ObscureWare.Console.Operations.Tests
             testedObj.RemoveCharsAt(buffer, index, removeQty, ref len);
 
             len.ShouldBe(expectedResult.Length);
+
+            string result = new string(buffer, 0, len);
+
+            result.ShouldBe(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("", 0, "", "")]
+        [InlineData("1", 0, "1", "11")]
+        [InlineData("1", 0, "12", "121")]
+        [InlineData("bc", 0, "a", "abc")]
+        [InlineData("bc", 1, "a", "bac")]
+        [InlineData("bc", 2, "a", "bca")]
+        public void InsertCharsAtShallProduceCorrectStrings(string entry, int index, string textToInsert, string expectedResult)
+        {
+            var testedObj = new VirtualEntryLine(new Mock<IConsole>().Object, new ConsoleFontColor(Color.AliceBlue, Color.AntiqueWhite));
+
+            char[] buffer = new char[entry.Length + textToInsert.Length];
+            entry.ToCharArray().CopyTo(buffer, 0);
+            char[] insertBuffer = textToInsert.ToCharArray();
+            int len = entry.Length;
+
+            testedObj.InsertCharsAt(buffer, index, len -1, insertBuffer);
+            len += insertBuffer.Length;
 
             string result = new string(buffer, 0, len);
 

@@ -30,8 +30,6 @@ namespace ObscureWare.Console.Operations
 {
     using System;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Collections.Generic;
     using System.Drawing;
 
@@ -43,12 +41,12 @@ namespace ObscureWare.Console.Operations
     /// <remarks>I'm gonna need this anyway for graphical console implementation in the future... So maybe better implement this correctly already...</remarks>
     public class VirtualEntryLine
     {
-        private const int MAX_COMMAND_LENGTH = 1024; // more?! no problem, but what for?
+        private const int MAX_COMMAND_LENGTH = 2048; // more?! no problem, but what for?
         private readonly IConsole _console;
         private readonly ConsoleFontColor _cmdColor;
         private readonly List<string> _commandHistory = new List<string>();
-        private int historyIndex = -1;
-        private bool overWriting = false;
+        private int _historyIndex = -1;
+        private bool _overWriting = false;
 
         public VirtualEntryLine(IConsole console, ConsoleFontColor cmdColor)
         {
@@ -96,7 +94,7 @@ namespace ObscureWare.Console.Operations
                             if (!this._commandHistory.Any() || !this._commandHistory.Last().Equals(cmdContent))
                             {
                                 this._commandHistory.Add(cmdContent);
-                                this.historyIndex = this._commandHistory.Count - 1;
+                                this._historyIndex = this._commandHistory.Count - 1;
                             }
                         }
                         return cmdContent;
@@ -236,10 +234,10 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.Insert)
                 {
-                    // TODO if (shift) => paste
+                    // TODO if (shift) => remove special characters & paste
 
                     // switch insert mode
-                    this.overWriting = !this.overWriting;
+                    this._overWriting = !this._overWriting;
                 }
                 else if (key.Key == ConsoleKey.End)
                 {
@@ -252,9 +250,9 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.PageUp)
                 {
-                    if (this.historyIndex < this._commandHistory.Count && this.historyIndex >= 0)
+                    if (this._historyIndex < this._commandHistory.Count && this._historyIndex >= 0)
                     {
-                        string historyEntry = this._commandHistory[this.historyIndex--];
+                        string historyEntry = this._commandHistory[this._historyIndex--];
                         // looping?
                         //if (historyIndex < 0)
                         //{
@@ -266,9 +264,9 @@ namespace ObscureWare.Console.Operations
                 }
                 else if (key.Key == ConsoleKey.PageDown)
                 {
-                    if (this.historyIndex < this._commandHistory.Count - 1 && this.historyIndex >= -1)
+                    if (this._historyIndex < this._commandHistory.Count - 1 && this._historyIndex >= -1)
                     {
-                        string historyEntry = this._commandHistory[++this.historyIndex];
+                        string historyEntry = this._commandHistory[++this._historyIndex];
                         // looping?
                         //if (historyIndex >= this._commandHistory.Count)
                         //{
@@ -291,7 +289,7 @@ namespace ObscureWare.Console.Operations
                     if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control &&
                         key.Key == ConsoleKey.V)
                     {
-                        // TODO: paste
+                        // TODO: paste, but remove special characters first
                     }
                     else
                     {
@@ -303,7 +301,7 @@ namespace ObscureWare.Console.Operations
                                 commandBuffer[currentCommandEndIndex] = key.KeyChar;
                                 currentCommandEndIndex += 1;
                             }
-                            else if (this.overWriting)
+                            else if (this._overWriting)
                             {
                                 // overwrite in the middle
                                 commandBuffer[lineIndex] = key.KeyChar;
@@ -405,7 +403,7 @@ namespace ObscureWare.Console.Operations
             currentCommandEndIndex -= qty;
         }
 
-        private void InsertCharsAt(char[] buffer, int from, int currentUsedMax, char[] newChars)
+        internal void InsertCharsAt(char[] buffer, int from, int currentUsedMax, char[] newChars)
         {
             int newLen = newChars.Length;
             for (int i = currentUsedMax; i <= buffer.Length + newLen && i >= from; i--)

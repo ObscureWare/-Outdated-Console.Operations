@@ -62,6 +62,11 @@ namespace ObscureWare.Console.Operations.Tables
 
         public void AddRow(T src, string[] rowValues)
         {
+            if (rowValues.SelectMany(row => row.ToCharArray()).Any(ch => (int)ch < 32))
+            {
+                throw new ArgumentException("Row values cannot contain special characters. Clean data before adding it to the table.", nameof(rowValues));
+            }
+            
             this._data.Add(src, rowValues);
         }
 
