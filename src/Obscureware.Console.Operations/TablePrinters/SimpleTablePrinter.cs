@@ -78,7 +78,7 @@ namespace ObscureWare.Console.Operations.TablePrinters
                             // taking care for asymmetric array, btw
                             if (row.Length > i)
                             {
-                                if (row[i].Length <= columns[i].CurrentLength)
+                                if ((row[i]?? "").Length <= columns[i].CurrentLength)
                                 {
                                     result[i] = row[i];
                                 }
@@ -99,7 +99,7 @@ namespace ObscureWare.Console.Operations.TablePrinters
                         bool allCellsFit = true;
                         for (int r = 0; r < row.Length && r < columns.Length; r++)
                         {
-                            if (row[r].Length > columns[r].CurrentLength)
+                            if ((row[r] ?? "").Length > columns[r].CurrentLength)
                             {
                                 allCellsFit = false;
                                 break;
@@ -117,7 +117,7 @@ namespace ObscureWare.Console.Operations.TablePrinters
                             List<string[]> stacks = new List<string[]>(columns.Length);
                             for (int i = 0; i < columns.Length && i < row.Length; i++)
                             {
-                                stacks.Add(row[i].SplitTextToFit((uint) columns[i].CurrentLength).ToArray());
+                                stacks.Add((row[i] ?? "").SplitTextToFit((uint) columns[i].CurrentLength).ToArray());
                             }
 
                             var tallestStack = stacks.Max(st => st.Length);
