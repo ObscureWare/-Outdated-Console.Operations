@@ -309,7 +309,8 @@ namespace ObscureWare.Console.Operations
                             else
                             {
                                 // insert in the middle
-                                this.InsertCharsAt(commandBuffer, lineIndex, currentCommandEndIndex, new []{ key.KeyChar });
+                                var usedBufferLength = currentCommandEndIndex + 1;
+                                this.InsertCharsAt(commandBuffer, lineIndex, new []{ key.KeyChar }, ref usedBufferLength);
                                 currentCommandEndIndex++;
                             }
 
@@ -403,10 +404,15 @@ namespace ObscureWare.Console.Operations
             currentCommandEndIndex -= qty;
         }
 
-        internal void InsertCharsAt(char[] buffer, int from, int currentUsedMax, char[] newChars)
+        internal void InsertCharsAt(char[] buffer, int from, char[] newChars, ref int bufferUsedLength)
         {
+            if (bufferUsedLength + newChars.Length < buffer.Length)
+            {
+                throw new ArgumentException("Buffer is not large enough to store requested sub-buffer.", nameof(buffer));    
+            }
+
             int newLen = newChars.Length;
-            for (int i = currentUsedMax; i <= buffer.Length + newLen && i >= from; i--)
+            for (int i = bufferUsedLength - 1; i <= buffer.Length + newLen && i >= from; i--)
             {
                 buffer[i + newLen] = buffer[i];
             }
@@ -415,6 +421,8 @@ namespace ObscureWare.Console.Operations
             {
                 buffer[from + i] = newChars[i];
             }
+
+            bufferUsedLength += newLen;
         }
     }
 }

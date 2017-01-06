@@ -67,6 +67,8 @@
     <Compile Include="TablePrinters\SimpleTablePrinter.cs" />
     <Compile Include="Styles\SimpleTableStyle.cs" />
     <Compile Include="TablePrinters\SpeflowStyleTablePrinter.cs" />
+    <Compile Include="Tables\DynamicDataTable.cs" />
+    <Compile Include="Tables\IDataTable.cs" />
     <Compile Include="TestAutoCompleter.cs" />
     <Compile Include="TextColumnInfo.cs" />
     <Compile Include="VirtualEntryLine.cs" />

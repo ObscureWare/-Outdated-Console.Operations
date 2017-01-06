@@ -103,8 +103,7 @@ namespace ObscureWare.Console.Operations.Tests
             char[] insertBuffer = textToInsert.ToCharArray();
             int len = entry.Length;
 
-            testedObj.InsertCharsAt(buffer, index, len -1, insertBuffer);
-            len += insertBuffer.Length;
+            testedObj.InsertCharsAt(buffer, index, insertBuffer, ref len);
 
             string result = new string(buffer, 0, len);
 

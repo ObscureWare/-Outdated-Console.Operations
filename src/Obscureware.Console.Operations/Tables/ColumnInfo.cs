@@ -30,6 +30,7 @@ namespace ObscureWare.Console.Operations.Tables
 {
     using System;
     using System.Linq;
+    using Shared;
 
     /// <summary>
     /// Defines table-column
@@ -42,7 +43,7 @@ namespace ObscureWare.Console.Operations.Tables
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(header));
             }
-            if (header.ToCharArray().Any(ch => (int)ch < 32))
+            if (header.ToCharArray().Any(ch => ch.IsSystemChar()))
             {
                 throw new ArgumentException("Header name cannot contain special characters.", nameof(header));
             }

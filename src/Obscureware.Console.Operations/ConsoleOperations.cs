@@ -394,12 +394,12 @@ namespace ObscureWare.Console.Operations
             return result;
         }
 
-        public void PrintAsSimpleTable<T>(DataTable<T> table, ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor)
+        public void PrintAsSimpleTable<T>(IDataTable<T> table, ConsoleFontColor tableHeaderColor, ConsoleFontColor tableRowColor)
         {
             this.PrintAsSimpleTable(table.Columns.Values.ToArray(), table.GetRows().ToArray(), tableHeaderColor, tableRowColor);
         }
 
-        public DataTable<T> BuildTable<T>(string[] header, IEnumerable<T> dataSource, Func<T, string[]> dataGenerator)
+        public IDataTable<T> BuildTable<T>(string[] header, IEnumerable<T> dataSource, Func<T, string[]> dataGenerator)
         {
             DataTable<T> table = new DataTable<T>(
                 new []{ "A.Id" }.Concat(header).Select(head => new ColumnInfo(head)).ToArray());
