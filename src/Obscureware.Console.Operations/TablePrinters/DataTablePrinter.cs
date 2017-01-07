@@ -2,7 +2,7 @@
 // <copyright file="DataTablePrinter.cs" company="Obscureware Solutions">
 // MIT License
 //
-// Copyright(c) 2016 Sebastian Gruchacz
+// Copyright(c) 2016-2017 Sebastian Gruchacz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using ObscureWare.Console.Operations.Styles;
-
-namespace ObscureWare.Console.Operations.Tables
+namespace ObscureWare.Console.Operations.TablePrinters
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    using ObscureWare.Console;
-    using ObscureWare.Console.Operations.Styles;
+    using Console;
+    using Styles;
+    using Tables;
 
     /// <summary>
     /// Base class for printing content of the <see cref="DataTable{T}"/>. Contains base routines for measurement.
@@ -78,7 +76,7 @@ namespace ObscureWare.Console.Operations.Tables
             // TODO: replace altering  original columns with producing RuntimeColumnInfo with more fields
             this.CalculateRequiredRowSizes(columns, rows);
 
-            int spacingWidth = columns.Length - 1; // This assumes 1-character wide spacing. If in need of using internal margins will have to ekspose rerlated property from inheriting class
+            int spacingWidth = columns.Length - 1; // This assumes 1-character wide spacing. If in need of using internal margins will have to expose related property from inheriting class
             int totalAvailableWidth = this.Console.WindowWidth - 1 - this.ExternalFrameThickness; // -1 for ENDL - need to not overflow, to avoid empty lines
             int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
 
@@ -91,7 +89,7 @@ namespace ObscureWare.Console.Operations.Tables
             int fixedColumnsCount = columns.Count(col => col.HasFixedLength);
             if ((totalAvailableWidth - totalFixedWidth) / (columns.Length - fixedColumnsCount) < MIN_SPACE_PER_COLUMN)
             {
-                throw new ArgumentException($"Fixed-length columns leave not enough space for remaining columns. It shall be no les than {MIN_SPACE_PER_COLUMN} characters per non-fixed-length column. Or you have just declared too many columns for current console resolution.", nameof(columns));
+                throw new ArgumentException($"Fixed-length columns leave not enough space for remaining columns. It shall be no less than {MIN_SPACE_PER_COLUMN} characters per non-fixed-length column. Or you have just declared too many columns for current console resolution.", nameof(columns));
             }
 
             // check if table fits to the screen width
@@ -107,7 +105,7 @@ namespace ObscureWare.Console.Operations.Tables
                         continue;
                     }
 
-                    // TODO:probably round would be as good... gonna check
+                    // TODO: probably round would be as good... gonna check
                     int newLength = (int)Math.Floor(columns[i].CurrentLength * scale);
                     if (newLength < columns[i].MinLength)
                     {

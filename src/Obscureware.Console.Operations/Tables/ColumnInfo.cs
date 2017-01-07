@@ -58,7 +58,7 @@ namespace ObscureWare.Console.Operations.Tables
 
         public int MinLength { get; set; }
 
-        public int CurrentLength { get; internal set; } // TODO: or perhaps totally internal?
+        internal int CurrentLength { get; set; }
 
         public ColumnAlignment Alignment { get; set; }
 

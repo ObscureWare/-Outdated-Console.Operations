@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,7 +62,7 @@
     <Compile Include="Tables\ColumnAlignment.cs" />
     <Compile Include="Tables\ColumnInfo.cs" />
     <Compile Include="Tables\DataTable.cs" />
-    <Compile Include="Tables\DataTablePrinter.cs" />
+    <Compile Include="TablePrinters\DataTablePrinter.cs" />
     <Compile Include="TablePrinters\FramedTablePrinter.cs" />
     <Compile Include="Styles\ICoreTableStyle.cs" />
     <Compile Include="TablePrinters\SimpleTablePrinter.cs" />

@@ -32,8 +32,10 @@ namespace ObscureWare.Console.Operations
     using System.Linq;
     using System.Collections.Generic;
     using System.Drawing;
-
+    using System.Text;
+    using System.Windows.Forms;
     using ObscureWare.Console;
+    using Shared;
 
     /// <summary>
     /// In order to use auto-completion I must simulate more or less all other expected behavior of console editing.
@@ -226,18 +228,27 @@ namespace ObscureWare.Console.Operations
                 {
                     // TODO: multiline fix
                     // TODO:  move cursor between lines
+                    // TODO: is it possible to do text selection with SHIFT?
                 }
                 else if (key.Key == ConsoleKey.DownArrow)
                 {
                     // TODO: multiline fix
-                    // TODO:  move cursor between lines
+                    // TODO: move cursor between lines
+                    // TODO: is it possible to do text selection with SHIFT?
                 }
                 else if (key.Key == ConsoleKey.Insert)
                 {
-                    // TODO if (shift) => remove special characters & paste
-
-                    // switch insert mode
-                    this._overWriting = !this._overWriting;
+                    if ((key.Modifiers & ConsoleModifiers.Shift) == ConsoleModifiers.Shift)
+                    {
+                        var currentPosition = this._console.GetCursorPosition();
+                        int lineIndex = this.CalculatePositionInLine(startPosition, currentPosition, consoleLineWidth);
+                        currentCommandEndIndex = this.PasteFromClipboard(commandBuffer, lineIndex, currentCommandEndIndex);
+                    }
+                    else
+                    {
+                        // switch insert mode
+                        this._overWriting = !this._overWriting;
+                    }
                 }
                 else if (key.Key == ConsoleKey.End)
                 {
@@ -289,7 +300,7 @@ namespace ObscureWare.Console.Operations
                     if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control &&
                         key.Key == ConsoleKey.V)
                     {
-                        // TODO: paste, but remove special characters first
+                        currentCommandEndIndex = this.PasteFromClipboard(commandBuffer, lineIndex, currentCommandEndIndex);
                     }
                     else
                     {
@@ -343,6 +354,34 @@ namespace ObscureWare.Console.Operations
                     // delete, esc
                 }
             }
+        }
+
+        private int PasteFromClipboard(char[] commandBuffer, int lineIndex, int currentCommandEndIndex)
+        {
+            var valueToPaste = this.GetCleanValueFromClipBoard().ToCharArray();
+            if (valueToPaste.Any())
+            {
+                var usedBufferLength = currentCommandEndIndex + 1;
+                this.InsertCharsAt(commandBuffer, lineIndex, valueToPaste, ref usedBufferLength);
+                currentCommandEndIndex += valueToPaste.Length;
+            }
+            return currentCommandEndIndex;
+        }
+
+        private string GetCleanValueFromClipBoard()
+        {
+            var txt = Clipboard.GetText().ToCharArray();
+            StringBuilder result = new StringBuilder(txt.Length);
+
+            foreach (char c in txt)
+            {
+                if (!c.IsSystemChar())
+                {
+                    result.Append(c);
+                }
+            }
+
+            return result.ToString();
         }
 
         /// <summary>
@@ -406,7 +445,7 @@ namespace ObscureWare.Console.Operations
 
         internal void InsertCharsAt(char[] buffer, int from, char[] newChars, ref int bufferUsedLength)
         {
-            if (bufferUsedLength + newChars.Length < buffer.Length)
+            if (bufferUsedLength + newChars.Length >= buffer.Length)
             {
                 throw new ArgumentException("Buffer is not large enough to store requested sub-buffer.", nameof(buffer));    
             }
