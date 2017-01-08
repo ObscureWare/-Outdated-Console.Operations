@@ -80,11 +80,13 @@ namespace ObscureWare.Console.Operations.TablePrinters
             int totalAvailableWidth = this.Console.WindowWidth - 1 - this.ExternalFrameThickness; // -1 for ENDL - need to not overflow, to avoid empty lines
             int maxRequiredWidth = columns.Select(col => col.CurrentLength).Sum() + spacingWidth;
 
-            int totalFixedWidth = columns.Where(col => col.HasFixedLength).Sum(col => col.MinLength);
+            int totalFixedWidth = columns.Where(col => col.HasFixedLength).Sum(col => col.FixedLength);
             if (totalFixedWidth > totalAvailableWidth)
             {
                 throw new ArgumentException("Total length of fixed-length columns exceed total available area.", nameof(columns));
             }
+
+            // TODO: more complex calculation required - need real "MinLength" columns not only "FixedLenght" ones
 
             int fixedColumnsCount = columns.Count(col => col.HasFixedLength);
             if ((totalAvailableWidth - totalFixedWidth) / (columns.Length - fixedColumnsCount) < MIN_SPACE_PER_COLUMN)
@@ -107,9 +109,9 @@ namespace ObscureWare.Console.Operations.TablePrinters
 
                     // TODO: probably round would be as good... gonna check
                     int newLength = (int)Math.Floor(columns[i].CurrentLength * scale);
-                    if (newLength < columns[i].MinLength)
+                    if (newLength < columns[i].FixedLength)
                     {
-                        newLength = Math.Min(availableWidth, columns[i].MinLength); // if all columns have minWidth and overflow the screen - some will not be displayed at all...
+                        newLength = Math.Min(availableWidth, columns[i].FixedLength); // if all columns have minWidth and overflow the screen - some will not be displayed at all...
                         columns[i].CurrentLength = newLength;
                     }
 
@@ -136,7 +138,7 @@ namespace ObscureWare.Console.Operations.TablePrinters
             // headers room
             for (int i = 0; i < columns.Length; ++i)
             {
-                columns[i].CurrentLength = Math.Max(columns[i].CurrentLength, columns[i].MinLength);
+                columns[i].CurrentLength = Math.Max(columns[i].CurrentLength, columns[i].FixedLength);
 
                 foreach (string[] row in rows)
                 {

@@ -37,7 +37,7 @@ namespace ObscureWare.Console.Operations.Tables
     /// </summary>
     public class ColumnInfo
     {
-        public ColumnInfo(string header, ColumnAlignment alignment = ColumnAlignment.Left, int minLength = 0)
+        public ColumnInfo(string header, ColumnAlignment alignment = ColumnAlignment.Left, int fixedLength = 0)
         {
             if (string.IsNullOrWhiteSpace(header))
             {
@@ -51,12 +51,12 @@ namespace ObscureWare.Console.Operations.Tables
             this.Header = header;
             this.Alignment = alignment;
             this.CurrentLength = header.Length;
-            this.MinLength = minLength;
+            this.FixedLength = fixedLength;
         }
 
         public string Header { get; private set; }
 
-        public int MinLength { get; set; }
+        public int FixedLength { get; set; }
 
         internal int CurrentLength { get; set; }
 
@@ -64,7 +64,7 @@ namespace ObscureWare.Console.Operations.Tables
 
         public bool HasFixedLength
         {
-            get { return this.MinLength > 0; }
+            get { return this.FixedLength > 0; }
         }
     }
 }
