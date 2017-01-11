@@ -125,7 +125,7 @@ namespace ObscureWare.Console.Operations
                             autocompleteIndex--;
                             if (autocompleteIndex < 0)
                             {
-                                autocompleteIndex = autocompleteList.Length;
+                                autocompleteIndex = autocompleteList.Length -1;
                             }
                         }
                         else
@@ -137,7 +137,7 @@ namespace ObscureWare.Console.Operations
                             }
                         }
                         
-                        string acText = autocompleteList[autocompleteIndex];
+                    string acText = autocompleteList[autocompleteIndex];
                         this.ApplyText(acText, this._console, commandBuffer, startPosition, ref longestLineContentSoFar, ref currentCommandEndIndex);
                     }
                 }
