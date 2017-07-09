@@ -86,7 +86,7 @@ namespace ObscureWare.Console.Operations.TablePrinters
                 throw new ArgumentException("Total length of fixed-length columns exceed total available area.", nameof(columns));
             }
 
-            // TODO: more complex calculation required - need real "MinLength" columns not only "FixedLenght" ones
+            // TODO: more complex calculation required - need real "MinLength" columns not only "FixedLength" ones
 
             int fixedColumnsCount = columns.Count(col => col.HasFixedLength);
             if ((totalAvailableWidth - totalFixedWidth) / (columns.Length - fixedColumnsCount) < MIN_SPACE_PER_COLUMN)

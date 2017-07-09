@@ -44,6 +44,7 @@ namespace ConsoleTests
     using ObscureWare.Console.Operations.Tables;
 
     using ObscureWare.Console;
+    using ObscureWare.Console.Operations.Tests;
     using ObscureWare.Shared;
 
     internal static class Program
@@ -73,6 +74,8 @@ namespace ConsoleTests
             Console.WriteLine("Holding console window open. Press ENTER to quit for good.");
             console.ReadLine();
         }
+
+        // TODO: write simulation console to automatically test complex printing functions results (content only, no color abstracting)
 
         private static void SimulateConsole(IConsole console)
         {
@@ -329,6 +332,4 @@ namespace ConsoleTests
             console.Clear();
         }
     }
-
-    // TODO: move to separate library of testing tools... tomorrow ;-)
 }

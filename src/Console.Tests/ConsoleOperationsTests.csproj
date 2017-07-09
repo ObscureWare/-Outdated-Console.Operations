@@ -9,13 +9,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ConsoleTests</RootNamespace>
     <AssemblyName>ConsoleTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,6 +64,10 @@
     <ProjectReference Include="..\..\..\Obscureware.Shared\src\Obscureware.Shared\Obscureware.Shared.csproj">
       <Project>{286F5FE3-B75F-41B0-98BF-095F4617513A}</Project>
       <Name>Obscureware.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObscureWare.Console.Operations.Tests\ObscureWare.Console.Operations.Tests.csproj">
+      <Project>{D683CE88-C693-4C21-954C-2A8BC5AA7E31}</Project>
+      <Name>ObscureWare.Console.Operations.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Obscureware.Console.Operations\ObscureWare.Console.Operations.csproj">
       <Project>{5C87D79C-7E55-4033-B42F-EEB926F1C8D4}</Project>

@@ -34,13 +34,15 @@ namespace ObscureWare.Console.Operations
     using System.Drawing;
     using System.Text;
     using System.Windows.Forms;
+    using CuttingEdge.Conditions;
     using ObscureWare.Console;
     using Shared;
 
     /// <summary>
     /// In order to use auto-completion I must simulate more or less all other expected behavior of console editing.
     /// </summary>
-    /// <remarks>I'm gonna need this anyway for graphical console implementation in the future... So maybe better implement this correctly already...</remarks>
+    /// <remarks>I'm gonna need this anyway for graphical console implementation in the future... So maybe better implement this correctly already...
+    /// TODO: Anyway, try targetting both stateless and statefull console (most work on the Commands library though)..</remarks>
     public class VirtualEntryLine
     {
         private const int MAX_COMMAND_LENGTH = 2048; // more?! no problem, but what for?
@@ -52,23 +54,17 @@ namespace ObscureWare.Console.Operations
 
         public VirtualEntryLine(IConsole console, ConsoleFontColor cmdColor)
         {
-            if (console == null)
-            {
-                throw new ArgumentNullException(nameof(console));
-            }
+            Condition.Requires(console, nameof(console)).IsNotNull();
 
             this._console = console;
             this._cmdColor = cmdColor;
         }
 
-
-        // TODO: this method is monstrosity, but it rather not be wise to cut it into pieces... It's slow enough...
+        // TODO: this method is monstrosity, but it rather not be wise to just cut it into pieces... It's slow enough...
+        // TODO: make this configurable, especially behaviour of UP/DOWND arrows might not be intuitive in some environments
         public string GetUserEntry(IAutoComplete acProvider)
         {
-            if (acProvider == null)
-            {
-                throw new ArgumentNullException(nameof(acProvider));
-            }
+            Condition.Requires(acProvider, nameof(acProvider)).IsNotNull();
 
             var startPosition = this._console.GetCursorPosition();
             var consoleLineWidth = this._console.WindowWidth;

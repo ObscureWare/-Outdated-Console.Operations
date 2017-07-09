@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ObscureWare.Console.Operations</RootNamespace>
     <AssemblyName>ObscureWare.Console.Operations</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,9 +37,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ObscureWare.Console, Version=0.3.0.28607, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObscureWare.Console.Core.0.3.0.28607\lib\net452\ObscureWare.Console.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CuttingEdge.Conditions, Version=1.2.0.11174, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,7 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleOperations.cs" />
-    <Compile Include="FakeAutoCompleter.cs" />
     <Compile Include="IAutoComplete.cs" />
     <Compile Include="Styles\FrameStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="TablePrinters\SpeflowStyleTablePrinter.cs" />
     <Compile Include="Tables\DynamicDataTable.cs" />
     <Compile Include="Tables\IDataTable.cs" />
-    <Compile Include="TestAutoCompleter.cs" />
     <Compile Include="TextColumnInfo.cs" />
     <Compile Include="VirtualEntryLine.cs" />
   </ItemGroup>
@@ -82,6 +80,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Console.Core\src\ObscureWare.Console\ObscureWare.Console.Core.csproj">
+      <Project>{e55bfaa2-62a4-4052-8351-548fbe5b02ba}</Project>
+      <Name>ObscureWare.Console.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Obscureware.Shared\src\Obscureware.Shared\Obscureware.Shared.csproj">
       <Project>{286f5fe3-b75f-41b0-98bf-095f4617513a}</Project>
       <Name>Obscureware.Shared</Name>
