@@ -55,6 +55,8 @@ namespace ObscureWare.Console.Operations.Styles
             this.TextColor = textColor;
             this.BackgroundFiller = backgroundFiller;
             this._frameChars = frameChars.ToCharArray();
+
+            // TODO: Performance-wise - read all these chars only once, in the ctor. Can be refactored at any time - does not alter interface.
         }
 
         public ConsoleFontColor FrameColor { get; private set; }

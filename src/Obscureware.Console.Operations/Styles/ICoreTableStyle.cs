@@ -32,10 +32,19 @@ namespace ObscureWare.Console.Operations.Styles
     
     public interface ICoreTableStyle
     {
+        /// <summary>
+        /// Colors of table header text
+        /// </summary>
         ConsoleFontColor HeaderColor { get; }
 
+        /// <summary>
+        /// Colors of table's odd/all rows text. Set both properties to the same color to not have different colouring of even and odd rows.
+        /// </summary>
         ConsoleFontColor RowColor { get; }
 
+        /// <summary>
+        /// Colors of table's even rows text
+        /// </summary>
         ConsoleFontColor EvenRowColor { get; }
 
         /// <summary>

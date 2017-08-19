@@ -54,6 +54,9 @@ namespace ObscureWare.Console.Operations.TablePrinters
 
         protected override void RenderTable(ColumnInfo[] columns, IEnumerable<string[]> rows)
         {
+            // yeah, some duplicated code here. Leave these optimized paths or make code more beautiful... decisions, decisions...
+            // TODO: refactoring, simplification, 
+
             int index = 0;
             string formatter = string.Join(" ", columns.Select(col => $"{{{index++},{col.CurrentLength * (int)col.Alignment}}}"));
 
